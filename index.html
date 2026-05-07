@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia Hype</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* =========================================
+           1. VARIÁVEIS E RESET
+           ========================================= */
+        :root {
+            --primary: #E6B325; 
+            --primary-vibrant: #FFD700;
+            --secondary: #0D9488;
+            --bg-dark: #030507; 
+            --bg-glass: rgba(255, 255, 255, 0.02); 
+            --border-glass: rgba(255, 255, 255, 0.05);
+            --text-light: #f8fafc;
+            --text-muted: #9ca3af; 
+            --transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            --radius: 20px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; list-style: none; text-decoration: none; }
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-light); line-height: 1.7; overflow-x: hidden; }
+        h1, h2, h3, h4, .logo { font-family: 'Poppins', sans-serif; }
+        ::selection { background-color: var(--primary); color: var(--bg-dark); }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* =========================================
+           2. HEADER E NAV
+           ========================================= */
+        header { position: fixed; width: 100%; top: 0; z-index: 1000; padding: 20px 0; transition: var(--transition); border-bottom: 1px solid transparent; }
+        header.scrolled { background: rgba(3, 5, 7, 0.7); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-glass); padding: 15px 0; }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.6rem; font-weight: 800; color: var(--text-light); }
+        .logo span { color: var(--primary); font-weight: 300; }
+        .nav-links { display: flex; align-items: center; gap: 30px; }
+        .nav-links a { color: var(--text-light); font-weight: 400; font-size: 0.9rem; text-transform: uppercase; transition: var(--transition); }
+        .nav-links a:hover:not(.btn-agendar-nav, .btn-login-nav) { color: var(--primary); }
+        
+        .btn-agendar-nav { background: rgba(230, 179, 37, 0.05); border: 1px solid rgba(230, 179, 37, 0.3); padding: 10px 24px; border-radius: 50px; color: var(--primary) !important; font-weight: 600 !important; }
+        .btn-login-nav { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); padding: 10px 24px; border-radius: 50px; cursor: pointer; display: flex; align-items: center; gap: 8px;}
+        .btn-login-nav:hover { background: rgba(255, 255, 255, 0.1); }
+        
+        .menu-toggle { display: none; color: var(--text-light); font-size: 1.5rem; cursor: pointer; z-index: 1001; }
+
+        /* =========================================
+           3. HERO
+           ========================================= */
+        .hero { min-height: 100vh; background: radial-gradient(circle at center, rgba(13, 148, 136, 0.1) 0%, rgba(3, 5, 7, 1) 70%), url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover; display: flex; align-items: center; justify-content: center; text-align: center; padding: 120px 20px 60px; position: relative; }
+        .hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, var(--bg-dark)); }
+        .hero-content { position: relative; z-index: 2; }
+        .hero h1 { font-size: clamp(3rem, 8vw, 6.5rem); line-height: 1; margin-bottom: 1.5rem; font-weight: 800; color: #fff; }
+        .hero strong { background: linear-gradient(135deg, var(--primary), var(--primary-vibrant)); -webkit-background-clip: text; color: transparent; }
+        .hero p { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--text-muted); margin-bottom: 3rem; max-width: 500px; margin-inline: auto; }
+        
+        .btn-primary { border: none; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; gap: 12px; padding: 20px 48px; background: var(--primary); color: var(--bg-dark); font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1rem; text-transform: uppercase; border-radius: 50px; transition: var(--transition); }
+        .btn-primary:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(230, 179, 37, 0.25); background: var(--primary-vibrant); }
+
+        /* =========================================
+           4. SEÇÕES
+           ========================================= */
+        section { padding: 120px 0; }
+        .section-title { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 80px; text-align: center; font-weight: 700; }
+        .section-title span { color: var(--primary); font-weight: 300; }
+
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .service-card { background: var(--bg-glass); backdrop-filter: blur(20px); padding: 50px 40px; border-radius: var(--radius); text-align: center; border: 1px solid var(--border-glass); transition: var(--transition); }
+        .service-card:hover { transform: translateY(-15px); border-color: rgba(230, 179, 37, 0.3); }
+        
+        .icon-wrapper { width: 70px; height: 70px; border-radius: 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; transition: var(--transition); transform: rotate(-5deg); }
+        .service-card:hover .icon-wrapper { background: var(--primary); transform: rotate(0deg) scale(1.1); }
+        .service-card i { font-size: 1.8rem; color: var(--text-light); }
+        .service-card:hover i { color: var(--bg-dark); }
+        .service-card h3 { font-size: 1.5rem; margin-bottom: 15px; }
+        .service-card p { color: var(--text-muted); margin-bottom: 30px; }
+        .price { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .price span { font-size: 1rem; color: var(--primary); font-weight: 500; }
+
+        /* =========================================
+           5. FORMULÁRIOS & INPUTS
+           ========================================= */
+        .form-container { background: var(--bg-glass); border: 1px solid var(--border-glass); padding: 50px; border-radius: var(--radius); max-width: 850px; margin: 0 auto; backdrop-filter: blur(24px); box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+        .form-group { display: flex; flex-direction: column; gap: 10px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        
+        label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        input[type="text"], input[type="tel"], input[type="date"], select { width: 100%; padding: 15px 20px; background: rgba(0,0,0,0.3); border: none; border-bottom: 2px solid var(--border-glass); border-radius: 12px 12px 0 0; color: var(--text-light); font-size: 1.05rem; outline: none; }
+        input:focus, select:focus { border-bottom-color: var(--primary); background: rgba(0,0,0,0.6); }
+        ::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.5; }
+
+        .time-slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 12px; margin-top: 10px; }
+        .time-slot { position: relative; cursor: pointer; }
+        .time-slot input { position: absolute; opacity: 0; }
+        .time-slot span { display: block; text-align: center; padding: 14px 5px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 12px; color: var(--text-muted); transition: var(--transition); }
+        .time-slot:hover span { color: var(--text-light); }
+        .time-slot input:checked + span { background: var(--primary); color: var(--bg-dark); border-color: var(--primary); font-weight: 700; transform: translateY(-3px); }
+        .time-slot input:disabled + span { background: rgba(0,0,0,0.5); color: #444; cursor: not-allowed; text-decoration: line-through; }
+        
+        .loading-slots { font-size: 0.9rem; color: var(--primary); display: none; align-items: center; gap: 8px; margin-top: 5px; }
+
+        /* =========================================
+           6. MODAIS E ÁREA DO CLIENTE
+           ========================================= */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); z-index: 2000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.4s ease; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        
+        .modal-content { background: #080A0D; padding: 50px; border-radius: var(--radius); text-align: center; border: 1px solid var(--border-glass); transform: scale(0.9); transition: 0.4s; position: relative; max-width: 450px; width: 90%; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; transition: 0.3s; }
+        .close-modal:hover { color: #fff; }
+
+        .modal-icon { font-size: 4.5rem; color: var(--primary); margin-bottom: 25px; }
+        .modal-content h3 { font-size: 1.8rem; margin-bottom: 10px; }
+        .modal-content p { color: var(--text-muted); margin-bottom: 25px; }
+
+        .appointment-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: left; }
+        .appointment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; }
+        .appointment-date { font-weight: 700; color: var(--text-light); }
+        .status-badge { padding: 4px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        
+        .status-pendente { background: #f59e0b; color: #fff; } 
+        .status-confirmado { background: #10b981; color: #fff; } 
+        .status-recusado { background: #ef4444; color: #fff; } 
+
+        .btn-secondary { background: transparent; border: 1px solid var(--border-glass); color: var(--text-light); padding: 12px 20px; border-radius: 12px; cursor: pointer; width: 100%; transition: 0.3s; margin-top: 10px; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+        /* =========================================
+           7. UTILITÁRIOS & MOBILE
+           ========================================= */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.1s; } .delay-2 { transition-delay: 0.2s; } .delay-3 { transition-delay: 0.3s; }
+
+        footer { padding: 60px 0 40px; text-align: center; border-top: 1px solid var(--border-glass); }
+        
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: rgba(3, 5, 7, 0.98); backdrop-filter: blur(20px); flex-direction: column; justify-content: center; gap: 40px; transition: var(--transition); }
+            .nav-links.active { right: 0; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-container { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="header">
+        <nav class="container">
+            <a href="#" class="logo">BARBER<span>Hype.</span></a>
+            <i class="fas fa-bars menu-toggle" id="mobile-menu-btn"></i>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#home">Início</a></li>
+                <li><a href="#servicos">Serviços</a></li>
+                <li><a href="#" class="btn-login-nav" id="btnAbrirLogin"><i class="far fa-user-circle"></i> Meus Agendamentos</a></li>
+                <li><a href="#agendamento" class="btn-agendar-nav">Agendar Agora</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content container">
+            <h1>O Estilo que <br>Você <strong>Respeita</strong></h1>
+            <p>Mais que um corte, uma experiência clássica e moderna dedicada ao homem atual.</p>
+            <a href="#agendamento" class="btn-primary">
+                Agendar Horário <i class="far fa-calendar-check"></i>
+            </a>
+        </div>
+    </section>
+
+    <section id="servicos" class="container">
+        <h2 class="section-title reveal">Nossos <span>Serviços</span></h2>
+        <div class="services-grid">
+            <div class="service-card reveal delay-1">
+                <div class="icon-wrapper"><i class="fas fa-cut"></i></div>
+                <h3>Corte Clássico</h3>
+                <p>O acabamento perfeito para o seu dia a dia.</p>
+                <div class="price"><span>R$</span> 50</div>
+            </div>
+            <div class="service-card reveal delay-2">
+                <div class="icon-wrapper"><i class="fas fa-water"></i></div>
+                <h3>Barba de Respeito</h3>
+                <p>Alinhamento preciso com toalha quente e navalha.</p>
+                <div class="price"><span>R$</span> 40</div>
+            </div>
+            <div class="service-card reveal delay-3">
+                <div class="icon-wrapper"><i class="fas fa-crown"></i></div>
+                <h3>Combo Premium</h3>
+                <p>Corte, barba, lavagem e massagem relaxante.</p>
+                <div class="price"><span>R$</span> 80</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="agendamento">
+        <div class="container">
+            <h2 class="section-title reveal">Agende seu <span>Horário</span></h2>
+            
+            <div class="form-container reveal delay-1">
+                <form id="agendamentoForm">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="nome">Seu Nome Completo</label>
+                            <input type="text" id="nome" required placeholder="Ex: João Silva">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="telefone">WhatsApp (Esse será seu Login)</label>
+                            <input type="tel" id="telefone" required placeholder="(11) 99999-9999" maxlength="15">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="servico">Serviço Desejado</label>
+                            <select id="servico" required>
+                                <option value="" disabled selected>Escolha um serviço...</option>
+                                <option value="Corte Clássico">Corte Clássico - R$ 50</option>
+                                <option value="Barba de Respeito">Barba de Respeito - R$ 40</option>
+                                <option value="Combo Premium">Combo Premium - R$ 80</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="data">Data de Preferência</label>
+                            <input type="date" id="data" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>
+                                Horários Disponíveis 
+                                <span class="loading-slots" id="loadingSlots"><i class="fas fa-spinner fa-spin"></i> Verificando...</span>
+                            </label>
+                            <div class="time-slots" id="timeSlotsContainer">
+                                <label class="time-slot"><input type="radio" name="hora" value="09:00" required><span>09:00</span></label>
+                                <label class="time-slot"><input type="radio" name="hora" value="10:00"><span>10:00</span></label>
+                                <label class="time-slot"><input type="radio" name="hora" value="11:00"><span>11:00</span></label>
+                                <label class="time-slot"><input type="radio" name="hora" value="14:00"><span>14:00</span></label>
+                                <label class="time-slot"><input type="radio" name="hora" value="15:00"><span>15:00</span></label>
+                                <label class="time-slot"><input type="radio" name="hora" value="16:00"><span>16:00</span></label>
+                                <label class="time-slot"><input type="radio" name="hora" value="17:00"><span>17:00</span></label>
+                                <label class="time-slot"><input type="radio" name="hora" value="18:00"><span>18:00</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="width: 100%; border-radius: 16px; padding: 22px;" id="btnAgendar">
+                        Confirmar Agendamento <i class="far fa-calendar-check"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <i class="far fa-check-circle modal-icon"></i>
+            <h3>Agendamento Solicitado!</h3>
+            <p>Acesse a opção <b>"Meus Agendamentos"</b> no menu para acompanhar se o seu horário foi confirmado.</p>
+            <button class="btn-secondary" onclick="document.getElementById('successModal').classList.remove('active')">Fechar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="clienteModal">
+        <div class="modal-content">
+            <i class="fas fa-times close-modal" id="fecharClienteModal"></i>
+            <h3>Área do Cliente</h3>
+            <p id="clienteSubtitulo">Acompanhe o status do seu agendamento.</p>
+
+            <div id="stepLogin">
+                <input type="tel" id="loginTelefone" placeholder="(11) 99999-9999" maxlength="15" style="margin-bottom: 15px;">
+                <button class="btn-primary" id="btnBuscarAgendamentos" style="width: 100%; border-radius: 12px; padding: 15px;">
+                    Entrar <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </div>
+
+            <div id="stepResultados" style="display: none;">
+                <div id="listaAgendamentos" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; padding-right: 5px;">
+                    </div>
+                <button class="btn-secondary" id="btnSairCliente" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
+                    <i class="fas fa-sign-out-alt"></i> Sair da Conta
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer id="contato">
+        <div class="container">
+            <p style="color: var(--text-muted);">&copy; 2026 BarberShop. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAAy9i8sY5hCa9qyO1hnwAU6bimwTNKobQ",
+            authDomain: "barbearia-a6c75.firebaseapp.com",
+            projectId: "barbearia-a6c75",
+            storageBucket: "barbearia-a6c75.firebasestorage.app",
+            messagingSenderId: "416548931435",
+            appId: "1:416548931435:web:558b622b9ad6aba975ae2e",
+            measurementId: "G-MC41GF3VL3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- PREENCHIMENTO AUTOMÁTICO SE ESTIVER LOGADO (BÔNUS) ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const numeroSalvo = localStorage.getItem('barber_user_phone');
+            if (numeroSalvo) {
+                // Se já existir número salvo, preenche automático no form principal de agendamento
+                document.getElementById('telefone').value = numeroSalvo;
+            }
+        });
+
+        // --- FUNÇÕES DE LAYOUT ---
+        function revealElements() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(reveal => {
+                if (reveal.getBoundingClientRect().top < window.innerHeight - 100) reveal.classList.add('active');
+            });
+        }
+        window.addEventListener('scroll', revealElements);
+        revealElements(); 
+
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
+
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('nav-links');
+        menuBtn.addEventListener('click', () => { navLinks.classList.toggle('active'); });
+
+        function maskTelefone(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        }
+        document.getElementById('telefone').addEventListener('input', maskTelefone);
+        document.getElementById('loginTelefone').addEventListener('input', maskTelefone);
+
+        // --- SISTEMA DE AGENDAMENTO (VERIFICAR DATAS E HORÁRIOS) ---
+        const dataInput = document.getElementById('data');
+        const slotsInputs = document.querySelectorAll('input[name="hora"]');
+        
+        const hoje = new Date();
+        const ano = hoje.getFullYear();
+        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+        const dia = String(hoje.getDate()).padStart(2, '0');
+        dataInput.min = `${ano}-${mes}-${dia}`;
+
+        dataInput.addEventListener('change', async function() {
+            if(!this.value) return;
+            const dataSelecionada = new Date(this.value + 'T12:00:00'); 
+            const diaSemana = dataSelecionada.getDay();
+            
+            if (diaSemana === 0 || diaSemana === 1) {
+                alert("Não abrimos aos Domingos e Segundas. Escolha outra data.");
+                this.value = ''; 
+                slotsInputs.forEach(input => { input.disabled = true; input.checked = false; });
+                return;
+            }
+
+            document.getElementById('loadingSlots').style.display = 'inline-flex';
+            slotsInputs.forEach(input => { input.disabled = true; input.checked = false; });
+
+            const dataParts = this.value.split('-');
+            const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
+            let horariosOcupados = [];
+
+            try {
+                const q = query(collection(db, "agendamentos"), where("data", "==", dataFormatada));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    if(doc.data().status !== "recusado") {
+                        horariosOcupados.push(doc.data().hora);
+                    }
+                });
+            } catch (error) { console.error(error); }
+
+            document.getElementById('loadingSlots').style.display = 'none';
+
+            const isHoje = (dataSelecionada.getDate() === hoje.getDate() && dataSelecionada.getMonth() === hoje.getMonth() && dataSelecionada.getFullYear() === hoje.getFullYear());
+            const horaAtual = hoje.getHours();
+            
+            slotsInputs.forEach(input => {
+                const horaDoSlotInt = parseInt(input.value.split(':')[0]);
+                if (horariosOcupados.includes(input.value) || (isHoje && horaDoSlotInt <= horaAtual)) {
+                    input.disabled = true; 
+                } else {
+                    input.disabled = false; 
+                }
+            });
+        });
+
+        // Enviar Formulário
+        document.getElementById('agendamentoForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const telefone = document.getElementById('telefone').value;
+            if (telefone.length < 14) return alert("WhatsApp inválido.");
+
+            const btnAgendar = document.getElementById('btnAgendar');
+            btnAgendar.innerHTML = 'Processando... <i class="fas fa-spinner fa-spin"></i>';
+            btnAgendar.disabled = true;
+
+            const nome = document.getElementById('nome').value;
+            const servico = document.getElementById('servico').value;
+            const dataRaw = document.getElementById('data').value;
+            const horaSelecionadaEl = document.querySelector('input[name="hora"]:checked');
+            
+            if(!horaSelecionadaEl) {
+                alert("Selecione um horário.");
+                btnAgendar.innerHTML = 'Confirmar Agendamento <i class="far fa-calendar-check"></i>';
+                btnAgendar.disabled = false; return;
+            }
+
+            const dataParts = dataRaw.split('-');
+            const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
+            let preco = servico.includes('Combo') ? 80 : (servico.includes('Barba') ? 40 : 50);
+
+            try {
+                await addDoc(collection(db, "agendamentos"), {
+                    nome: nome,
+                    telefone: telefone,
+                    servico: servico,
+                    preco: preco,
+                    data: dataFormatada,
+                    hora: horaSelecionadaEl.value,
+                    status: "pendente"
+                });
+                
+                // SALVA O NÚMERO NO LOCALSTORAGE APÓS AGENDAR
+                localStorage.setItem('barber_user_phone', telefone);
+
+                document.getElementById('successModal').classList.add('active');
+                
+                // Reseta só alguns campos, mantém o nome e telefone para facilitar próximos agendamentos
+                document.getElementById('data').value = '';
+                document.getElementById('servico').value = '';
+                slotsInputs.forEach(input => { input.disabled = false; input.checked = false; });
+
+            } catch (error) {
+                alert("Erro ao salvar.");
+            }
+            btnAgendar.innerHTML = 'Confirmar Agendamento <i class="far fa-calendar-check"></i>';
+            btnAgendar.disabled = false;
+        });
+
+        // --- SISTEMA DE LOGIN (LOCALSTORAGE) E ÁREA DO CLIENTE ---
+        const clienteModal = document.getElementById('clienteModal');
+        const stepLogin = document.getElementById('stepLogin');
+        const stepResultados = document.getElementById('stepResultados');
+        const listaAgendamentos = document.getElementById('listaAgendamentos');
+
+        // Abrir Modal
+        document.getElementById('btnAbrirLogin').addEventListener('click', async (e) => {
+            e.preventDefault();
+            navLinks.classList.remove('active'); 
+            clienteModal.classList.add('active');
+
+            // VERIFICA SE TEM ALGUÉM LOGADO NA MEMÓRIA
+            const numeroSalvo = localStorage.getItem('barber_user_phone');
+            
+            if (numeroSalvo) {
+                // Se tiver, preenche o input e já busca direto!
+                document.getElementById('loginTelefone').value = numeroSalvo;
+                await buscarAgendamentosDoBanco(numeroSalvo);
+            } else {
+                // Se não tiver, mostra a tela para digitar
+                stepLogin.style.display = 'block';
+                stepResultados.style.display = 'none';
+                document.getElementById('clienteSubtitulo').innerText = "Digite seu WhatsApp para acessar.";
+            }
+        });
+
+        // Fechar Modal
+        document.getElementById('fecharClienteModal').addEventListener('click', () => {
+            clienteModal.classList.remove('active');
+        });
+
+        // Clique no botão "Entrar" (Primeiro login)
+        document.getElementById('btnBuscarAgendamentos').addEventListener('click', async () => {
+            const tel = document.getElementById('loginTelefone').value;
+            if(tel.length < 14) return alert("Digite um WhatsApp válido para acessar.");
+            await buscarAgendamentosDoBanco(tel);
+        });
+
+        // Função principal que busca no Firebase
+        async function buscarAgendamentosDoBanco(telefone) {
+            const btnBuscar = document.getElementById('btnBuscarAgendamentos');
+            btnBuscar.innerHTML = 'Entrando... <i class="fas fa-spinner fa-spin"></i>';
+            btnBuscar.disabled = true;
+
+            stepLogin.style.display = 'none';
+            stepResultados.style.display = 'block';
+            listaAgendamentos.innerHTML = "<p style='text-align:center; padding: 20px 0;'><i class='fas fa-spinner fa-spin'></i> Carregando seus horários...</p>";
+            document.getElementById('clienteSubtitulo').innerText = "Meus horários recentes:";
+
+            try {
+                const q = query(collection(db, "agendamentos"), where("telefone", "==", telefone));
+                const querySnapshot = await getDocs(q);
+
+                listaAgendamentos.innerHTML = "";
+
+                if(querySnapshot.empty) {
+                    listaAgendamentos.innerHTML = "<p style='text-align:center; padding: 20px 0;'>Você ainda não tem agendamentos registrados.</p>";
+                } else {
+                    let agendamentosHtml = "";
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        
+                        let statusClass = "status-pendente";
+                        let statusTexto = "Em Análise";
+
+                        if(data.status === "confirmado") {
+                            statusClass = "status-confirmado";
+                            statusTexto = "Confirmado";
+                        } else if(data.status === "recusado") {
+                            statusClass = "status-recusado";
+                            statusTexto = "Recusado";
+                        }
+
+                        agendamentosHtml += `
+                            <div class="appointment-card">
+                                <div class="appointment-header">
+                                    <span class="appointment-date"><i class="far fa-calendar-alt"></i> ${data.data} às ${data.hora}</span>
+                                    <span class="status-badge ${statusClass}">${statusTexto}</span>
+                                </div>
+                                <div style="color: var(--text-muted); font-size: 0.9rem;">
+                                    <strong>Serviço:</strong> ${data.servico}<br>
+                                    <strong>Cliente:</strong> ${data.nome}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    listaAgendamentos.innerHTML = agendamentosHtml;
+                }
+
+                // SALVA O LOGIN COM SUCESSO NO NAVEGADOR
+                localStorage.setItem('barber_user_phone', telefone);
+                // Preenche o form lá fora também
+                document.getElementById('telefone').value = telefone;
+
+            } catch(error) {
+                console.error("Erro:", error);
+                listaAgendamentos.innerHTML = "<p style='text-align:center; color: red;'>Erro ao carregar os dados.</p>";
+            }
+
+            btnBuscar.innerHTML = 'Entrar <i class="fas fa-sign-in-alt"></i>';
+            btnBuscar.disabled = false;
+        }
+
+        // DESLOGAR (Apagar da memória)
+        document.getElementById('btnSairCliente').addEventListener('click', () => {
+            // Remove do localStorage
+            localStorage.removeItem('barber_user_phone');
+            
+            // Limpa os campos
+            document.getElementById('loginTelefone').value = "";
+            document.getElementById('telefone').value = ""; 
+            
+            // Volta para a tela de digitar o número
+            stepResultados.style.display = 'none';
+            stepLogin.style.display = 'block';
+            document.getElementById('clienteSubtitulo').innerText = "Digite seu WhatsApp para acessar.";
+        });
+
+    </script>
+</body>
+</html>
