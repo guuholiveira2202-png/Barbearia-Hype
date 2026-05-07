@@ -60,7 +60,7 @@
         .header p { color: var(--text-muted); margin-top: 5px; font-size: 0.95rem; }
         .header-actions { display: flex; gap: 20px; align-items: center; }
         
-        .btn-add { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #000; border: none; padding: 12px 24px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; gap: 8px; align-items: center; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .btn-add { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #000; border: none; padding: 12px 24px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; gap: 8px; align-items: center; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); white-space: nowrap; }
         .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4); }
 
         .user-profile { display: flex; align-items: center; gap: 12px; background: var(--bg-panel); padding: 8px 24px 8px 8px; border-radius: 50px; border: 1px solid var(--border-glass); }
@@ -80,16 +80,36 @@
 
         /* ================= TABLES & CONTROLS ================= */
         .table-container { background: var(--bg-panel); border-radius: var(--radius); border: 1px solid var(--border-glass); box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        
         .table-controls { padding: 20px 30px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         
-        .filters { display: flex; gap: 8px; align-items: center; }
-        .btn-filter { background: transparent; border: 1px solid var(--border-glass); color: var(--text-muted); padding: 8px 18px; border-radius: 50px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; font-weight: 600; }
+        /* SISTEMA DE ROLAGEM HORIZONTAL PARA OS FILTROS */
+        .filters-container {
+            flex-grow: 1;
+            max-width: 100%;
+            overflow-x: auto; /* Permite arrastar pro lado */
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Esconde a barra no Firefox */
+        }
+        .filters-container::-webkit-scrollbar {
+            display: none; /* Esconde a barra no Chrome/Safari */
+        }
+        .filters { 
+            display: flex; 
+            gap: 10px; 
+            align-items: center; 
+            flex-wrap: nowrap; /* Impede que quebre as linhas */
+            width: max-content; /* Força o contêiner a ter o tamanho exato dos botões */
+            padding-bottom: 5px; /* Espaço para não cortar sombras/bordas */
+        }
+        
+        .btn-filter { background: transparent; border: 1px solid var(--border-glass); color: var(--text-muted); padding: 8px 18px; border-radius: 50px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
         .btn-filter:hover, .btn-filter.active { background: var(--bg-glass); color: var(--text-light); border-color: var(--primary); }
         
-        .btn-export { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--secondary); padding: 8px 18px; border-radius: 8px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; display: flex; gap: 8px; align-items: center; margin-left: 10px; font-weight: 600; }
+        .btn-export { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--secondary); padding: 8px 18px; border-radius: 8px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; display: flex; gap: 8px; align-items: center; margin-left: 10px; font-weight: 600; white-space: nowrap; }
         .btn-export:hover { background: var(--secondary); color: #fff; }
 
-        .search-box { display: flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border-glass); padding: 10px 18px; border-radius: 12px; width: 300px; transition: var(--transition); }
+        .search-box { display: flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border-glass); padding: 10px 18px; border-radius: 12px; min-width: 280px; flex: 1; max-width: 350px; transition: var(--transition); }
         .search-box:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1); }
         .search-box i { color: var(--text-muted); margin-right: 12px; font-size: 0.9rem; }
         .search-box input { background: transparent; border: none; color: var(--text-light); outline: none; width: 100%; font-size: 0.9rem; }
@@ -157,9 +177,8 @@
             .nav-item { flex-direction: column; padding: 8px 0; font-size: 0.7rem; gap: 4px; border-radius: 0; flex: 1; justify-content: center; border-left: none !important; border-top: 3px solid transparent; }
             .nav-item i { font-size: 1.3rem; margin-bottom: 2px; }
             .nav-item:hover, .nav-item.active { background: transparent; border-top: 3px solid var(--primary); color: var(--primary); }
-            .logout-btn { display: none; /* Esconde no menu inferior para poupar espaço */ }
+            .logout-btn { display: none; }
 
-            /* Ajustes de Layout Mobile */
             .main-content { padding: 20px 15px 90px 15px; } 
             .header { flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
             .header h1 { font-size: 1.8rem; }
@@ -172,10 +191,8 @@
             .stat-icon { width: 50px; height: 50px; font-size: 1.3rem; }
 
             .table-controls { flex-direction: column; align-items: stretch; padding: 15px; gap: 15px; }
-            .filters { overflow-x: auto; padding-bottom: 5px; -webkit-overflow-scrolling: touch; }
-            .btn-filter { white-space: nowrap; padding: 8px 14px; }
-            .btn-export { margin-left: 0; justify-content: center; }
-            .search-box { width: 100%; }
+            
+            .search-box { width: 100%; max-width: 100%; }
 
             /* Tabelas em Cards no Celular */
             table, thead, tbody, th, td, tr { display: block; }
@@ -248,12 +265,14 @@
 
             <div class="table-container">
                 <div class="table-controls">
-                    <div class="filters">
-                        <button class="btn-filter active" onclick="window.filtrar('todos', this)">Todos</button>
-                        <button class="btn-filter" onclick="window.filtrar('pendente', this)">Pendentes</button>
-                        <button class="btn-filter" onclick="window.filtrar('confirmado', this)">Confirmados</button>
-                        <button class="btn-filter" onclick="window.filtrar('concluido', this)">Concluídos</button>
-                        <button class="btn-export" onclick="window.exportarCSV()"><i class="fas fa-file-excel"></i> Exportar</button>
+                    <div class="filters-container">
+                        <div class="filters">
+                            <button class="btn-filter active" onclick="window.filtrar('todos', this)">Todos</button>
+                            <button class="btn-filter" onclick="window.filtrar('pendente', this)">Pendentes</button>
+                            <button class="btn-filter" onclick="window.filtrar('confirmado', this)">Confirmados</button>
+                            <button class="btn-filter" onclick="window.filtrar('concluido', this)">Concluídos</button>
+                            <button class="btn-export" onclick="window.exportarCSV()"><i class="fas fa-file-excel"></i> Exportar</button>
+                        </div>
                     </div>
                     <div class="search-box">
                         <i class="fas fa-search"></i>
@@ -273,8 +292,10 @@
         <div id="view-clientes" class="hidden fade-in">
             <div class="table-container">
                 <div class="table-controls">
-                    <div class="filters">
-                        <h3 style="color: var(--text-light); font-size: 1.1rem; font-weight: 600;">Diretório de Clientes</h3>
+                    <div class="filters-container">
+                        <div class="filters">
+                            <h3 style="color: var(--text-light); font-size: 1.1rem; font-weight: 600; white-space: nowrap;">Diretório de Clientes</h3>
+                        </div>
                     </div>
                     <div class="search-box">
                         <i class="fas fa-search"></i>
@@ -347,7 +368,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
-        // MANTENDO SUAS CREDENCIAIS
         const firebaseConfig = {
             apiKey: "AIzaSyAAy9i8sY5hCa9qyO1hnwAU6bimwTNKobQ",
             authDomain: "barbearia-a6c75.firebaseapp.com",
@@ -372,11 +392,9 @@
         const amanhaObj = new Date(); amanhaObj.setDate(hojeObj.getDate() + 1);
         const dataAmanhaFormatada = `${String(amanhaObj.getDate()).padStart(2, '0')}/${String(amanhaObj.getMonth() + 1).padStart(2, '0')}/${amanhaObj.getFullYear()}`;
 
-        // Opções de formatação elegante para exibição
         const opcoesData = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('dataAtualDisplay').innerHTML = hojeObj.toLocaleDateString('pt-BR', opcoesData).replace(/^\w/, c => c.toUpperCase());
 
-        // Listener em Tempo Real (Firebase)
         onSnapshot(collection(db, "agendamentos"), (snapshot) => {
             dadosDoBanco = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             window.renderizarPainel();
@@ -385,7 +403,6 @@
             mostrarToast("Falha ao sincronizar dados.", true);
         });
 
-        // Navegação entre abas
         window.mudarAba = (aba, elemento) => {
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
             elemento.classList.add('active');
@@ -397,8 +414,6 @@
 
             const viewAtiva = document.getElementById(`view-${aba}`);
             viewAtiva.classList.remove('hidden');
-            
-            // Força reflow para reativar animação
             void viewAtiva.offsetWidth; 
             viewAtiva.classList.add('fade-in');
 
@@ -411,7 +426,6 @@
             document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        // Renderiza Tabela Dashboard
         window.renderizarPainel = () => {
             const tbody = document.getElementById('tabelaAgendamentos');
             if(!tbody) return;
@@ -426,14 +440,12 @@
                 return matchFiltro && matchBusca;
             });
 
-            // Ordenação cronológica (Data e Hora)
             dadosFiltrados.sort((a, b) => {
                 const dateA = new Date(`${(a.data||'').split('/').reverse().join('-')}T${a.hora||'00:00'}`);
                 const dateB = new Date(`${(b.data||'').split('/').reverse().join('-')}T${b.hora||'00:00'}`);
                 return dateA - dateB;
             });
 
-            // Calcula Métricas de Hoje
             dadosDoBanco.forEach(a => {
                 if (a.data === dataLocalFormatada && a.status !== "cancelado") { 
                     if(a.status !== "concluido") totalHoje++;
@@ -441,7 +453,6 @@
                 }
             });
 
-            // Agrupa por Data
             const agrupados = {};
             dadosFiltrados.forEach(ag => {
                 const d = ag.data || 'Sem Data';
@@ -483,7 +494,6 @@
             document.getElementById('rendaEstimada').textContent = `R$ ${rendaHoje},00`;
         };
 
-        // Renderiza Tabela Clientes
         window.renderizarClientes = () => {
             const tbody = document.getElementById('tabelaClientes');
             if(!tbody) return; 
@@ -519,7 +529,6 @@
             }
         };
 
-        // Ações CRUD
         window.alterarStatus = async (id, status) => {
             try { await updateDoc(doc(db, "agendamentos", id), { status }); mostrarToast(`Marcado como ${status}!`); } 
             catch (e) { mostrarToast("Erro de atualização.", true); }
@@ -546,16 +555,14 @@
             const dataParts = isoDate.split('-');
             const dataForm = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
 
-            // TRAVA DE SEGURANÇA: Evita agendamento no mesmo dia e hora
             const horarioOcupado = dadosDoBanco.some(ag => ag.data === dataForm && ag.hora === hora && ag.status !== 'cancelado');
             
             if(horarioOcupado) {
                 mostrarToast("Horário Indisponível! Já existe um cliente neste horário.", true);
                 btn.textContent = "Confirmar Agendamento"; btn.disabled = false;
-                return; // Interrompe o salvamento
+                return; 
             }
 
-            // Definição de Preço simplificada pelo nome do serviço
             let preco = 50;
             if(servico.includes('Barba')) preco = 40;
             if(servico.includes('Combo')) preco = 80;
@@ -572,7 +579,6 @@
             }
         }
 
-        // Funções de Interface
         const modal = document.getElementById('modalAdd');
         window.abrirModal = () => modal.classList.add('active');
         window.fecharModal = () => { modal.classList.remove('active'); document.getElementById('formNovo').reset(); }
@@ -587,21 +593,33 @@
             mostrarToast("Download iniciado!");
         }
 
-        // Máscara de Telefone BR
         document.getElementById('addFone').addEventListener('input', e => {
             let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
             e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
         });
 
+        // LÓGICA DO TOAST COM TEMPORIZADOR CORRIGIDO
+        let toastTimeout; 
         function mostrarToast(msg, erro = false) {
             const t = document.getElementById('toast');
             document.getElementById('toastMsg').textContent = msg;
+            
             t.style.borderLeftColor = erro ? 'var(--danger)' : 'var(--secondary)';
+            t.style.borderBottomColor = erro ? 'var(--danger)' : 'var(--secondary)'; 
             t.querySelector('i').className = erro ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
             t.querySelector('i').style.color = erro ? 'var(--danger)' : 'var(--secondary)';
+            
             t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3500);
+            
+            clearTimeout(toastTimeout);
+            
+            toastTimeout = setTimeout(() => {
+                t.classList.remove('show');
+            }, 3000); 
         }
+        
+        // Torna a função global para ser acessível no HTML
+        window.mostrarToast = mostrarToast;
     </script>
 </body>
 </html>
