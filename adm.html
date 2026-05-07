@@ -87,20 +87,20 @@
         .filters-container {
             flex-grow: 1;
             max-width: 100%;
-            overflow-x: auto; /* Permite arrastar pro lado */
+            overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Esconde a barra no Firefox */
+            scrollbar-width: none;
         }
         .filters-container::-webkit-scrollbar {
-            display: none; /* Esconde a barra no Chrome/Safari */
+            display: none;
         }
         .filters { 
             display: flex; 
             gap: 10px; 
             align-items: center; 
-            flex-wrap: nowrap; /* Impede que quebre as linhas */
-            width: max-content; /* Força o contêiner a ter o tamanho exato dos botões */
-            padding-bottom: 5px; /* Espaço para não cortar sombras/bordas */
+            flex-wrap: nowrap; 
+            width: max-content; 
+            padding-bottom: 5px; 
         }
         
         .btn-filter { background: transparent; border: 1px solid var(--border-glass); color: var(--text-muted); padding: 8px 18px; border-radius: 50px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
@@ -144,7 +144,7 @@
         .btn-delete:hover { background: var(--danger); color: #fff; transform: scale(1.05); }
 
         /* ================= MODALS & TOAST ================= */
-        #toast { position: fixed; bottom: 30px; right: 30px; background: var(--bg-panel); border-left: 4px solid var(--secondary); color: #fff; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 15px; transform: translateX(150%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; font-weight: 500; }
+        #toast { position: fixed; bottom: 30px; right: 30px; background: var(--bg-panel); border-left: 4px solid var(--secondary); color: #fff; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 15px; transform: translateX(150%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; font-weight: 500; cursor: pointer; user-select: none; }
         #toast.show { transform: translateX(0); }
         
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 3000; display: none; align-items: center; justify-content: center; opacity: 0; transition: var(--transition); }
@@ -255,7 +255,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon-gold"><i class="fas fa-dollar-sign"></i></div>
-                    <div class="stat-info"><h3 id="rendaEstimada">R$ 0</h3><p>Faturamento Projetado</p></div>
+                    <div class="stat-info"><h3 id="rendaEstimada">R$ 0,00</h3><p>Faturamento do Mês</p></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon-blue"><i class="fas fa-users"></i></div>
@@ -362,11 +362,38 @@
         </div>
     </div>
 
-    <div id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Operação realizada!</span></div>
+    <div id="toast" onclick="this.classList.remove('show')" title="Clique para fechar">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg">Operação realizada!</span>
+        <i class="fas fa-times" style="margin-left: auto; padding-left: 15px; color: rgba(255,255,255,0.5); font-size: 0.9rem;"></i>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+        // ================= LÓGICA DO TOAST NO TOPO =================
+        let toastTimeout; 
+        function mostrarToast(msg, erro = false) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            
+            t.style.borderLeftColor = erro ? 'var(--danger)' : 'var(--secondary)';
+            t.style.borderBottomColor = erro ? 'var(--danger)' : 'var(--secondary)'; 
+            
+            // Pega o primeiro ícone (ignora o "X") e troca conforme erro ou sucesso
+            t.querySelector('i:first-child').className = erro ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+            t.querySelector('i:first-child').style.color = erro ? 'var(--danger)' : 'var(--secondary)';
+            
+            t.classList.add('show');
+            clearTimeout(toastTimeout);
+            
+            toastTimeout = setTimeout(() => {
+                t.classList.remove('show');
+            }, 3000); 
+        }
+        window.mostrarToast = mostrarToast;
+        // ==========================================================
 
         const firebaseConfig = {
             apiKey: "AIzaSyAAy9i8sY5hCa9qyO1hnwAU6bimwTNKobQ",
@@ -386,7 +413,6 @@
         let termoBusca = '';
         let termoBuscaCliente = '';
 
-        // Formatação de datas relativas
         const hojeObj = new Date();
         const dataLocalFormatada = `${String(hojeObj.getDate()).padStart(2, '0')}/${String(hojeObj.getMonth() + 1).padStart(2, '0')}/${hojeObj.getFullYear()}`;
         const amanhaObj = new Date(); amanhaObj.setDate(hojeObj.getDate() + 1);
@@ -431,7 +457,11 @@
             if(!tbody) return;
             tbody.innerHTML = ''; 
             
-            let totalHoje = 0; let rendaHoje = 0;
+            let totalHoje = 0; 
+            let faturamentoProjetado = 0; 
+
+            const mesAtual = String(hojeObj.getMonth() + 1).padStart(2, '0');
+            const anoAtual = String(hojeObj.getFullYear());
 
             const dadosFiltrados = dadosDoBanco.filter(a => {
                 const status = String(a.status || "pendente").toLowerCase();
@@ -447,9 +477,16 @@
             });
 
             dadosDoBanco.forEach(a => {
-                if (a.data === dataLocalFormatada && a.status !== "cancelado") { 
-                    if(a.status !== "concluido") totalHoje++;
-                    rendaHoje += Number(a.preco || 0);
+                if (a.status !== "cancelado") { 
+                    if (a.data === dataLocalFormatada) {
+                        totalHoje++;
+                    }
+                    if (a.data) {
+                        const partesData = a.data.split('/');
+                        if (partesData.length === 3 && partesData[1] === mesAtual && partesData[2] === anoAtual) {
+                            faturamentoProjetado += Number(a.preco || 0);
+                        }
+                    }
                 }
             });
 
@@ -491,7 +528,7 @@
             }
 
             document.getElementById('totalHoje').textContent = totalHoje;
-            document.getElementById('rendaEstimada').textContent = `R$ ${rendaHoje},00`;
+            document.getElementById('rendaEstimada').textContent = faturamentoProjetado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         };
 
         window.renderizarClientes = () => {
@@ -598,28 +635,6 @@
             e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
         });
 
-        // LÓGICA DO TOAST COM TEMPORIZADOR CORRIGIDO
-        let toastTimeout; 
-        function mostrarToast(msg, erro = false) {
-            const t = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = msg;
-            
-            t.style.borderLeftColor = erro ? 'var(--danger)' : 'var(--secondary)';
-            t.style.borderBottomColor = erro ? 'var(--danger)' : 'var(--secondary)'; 
-            t.querySelector('i').className = erro ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
-            t.querySelector('i').style.color = erro ? 'var(--danger)' : 'var(--secondary)';
-            
-            t.classList.add('show');
-            
-            clearTimeout(toastTimeout);
-            
-            toastTimeout = setTimeout(() => {
-                t.classList.remove('show');
-            }, 3000); 
-        }
-        
-        // Torna a função global para ser acessível no HTML
-        window.mostrarToast = mostrarToast;
     </script>
 </body>
 </html>
