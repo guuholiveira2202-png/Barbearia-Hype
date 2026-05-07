@@ -60,10 +60,10 @@
         .table-controls { padding: 20px 30px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); flex-wrap: wrap; gap: 15px; }
         
         .filters { display: flex; gap: 10px; align-items: center; }
-        .btn-filter { background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); color: var(--text-muted); padding: 8px 16px; border-radius: 50px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; font-weight: 600; }
+        .btn-filter { background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); color: var(--text-muted); padding: 8px 16px; border-radius: 50px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
         .btn-filter:hover, .btn-filter.active { background: var(--primary); color: var(--bg-dark); border-color: var(--primary); }
         
-        .btn-export { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; display: flex; gap: 8px; align-items: center; margin-left: 15px; }
+        .btn-export { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; display: flex; gap: 8px; align-items: center; margin-left: 15px; white-space: nowrap; }
         .btn-export:hover { background: #10b981; color: #fff; }
 
         .search-box { display: flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border-glass); padding: 10px 15px; border-radius: 8px; width: 280px; }
@@ -72,18 +72,18 @@
 
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th, td { padding: 15px 30px; }
-        th { color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; border-bottom: 1px solid var(--border-glass); background: rgba(255, 255, 255, 0.01); }
+        th { color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; border-bottom: 1px solid var(--border-glass); background: rgba(255, 255, 255, 0.01); white-space: nowrap; }
         tbody tr { border-bottom: 1px solid rgba(255, 255, 255, 0.02); transition: var(--transition); }
         tbody tr:hover { background: rgba(255, 255, 255, 0.02); }
 
         .date-separator td { background: rgba(230, 179, 37, 0.05); color: var(--primary); font-family: 'Poppins', sans-serif; font-weight: 600; letter-spacing: 1px; font-size: 0.9rem; border-bottom: 1px solid rgba(230, 179, 37, 0.2) !important; padding: 10px 30px; }
         .date-separator:hover { background: rgba(230, 179, 37, 0.05) !important; }
 
-        .client-info { display: flex; flex-direction: column; }
+        .client-info { display: flex; flex-direction: column; white-space: nowrap; }
         .client-name { font-weight: 600; color: var(--text-light); font-size: 1rem; margin-bottom: 3px; }
         .client-phone { color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
-        .service-badge { display: inline-block; padding: 6px 12px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; font-size: 0.85rem; }
-        .date-time { font-family: 'Poppins', sans-serif; font-weight: 500; color: var(--primary); }
+        .service-badge { display: inline-block; padding: 6px 12px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; font-size: 0.85rem; white-space: nowrap; }
+        .date-time { font-family: 'Poppins', sans-serif; font-weight: 500; color: var(--primary); white-space: nowrap; }
 
         .status { padding: 6px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; display: inline-block; }
         .status.pendente { background: rgba(230, 179, 37, 0.15); color: var(--primary); border: 1px solid rgba(230, 179, 37, 0.3); }
@@ -117,6 +117,140 @@
         
         .btn-submit { width: 100%; background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: 700; margin-top: 10px; cursor: pointer; transition: 0.3s; }
         .btn-submit:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+        /* ==========================================
+           RESPONSIVIDADE (AJUSTES PARA CELULAR)
+           ========================================== */
+        @media (max-width: 768px) {
+            body { 
+                flex-direction: column; 
+            }
+            
+            /* Transforma a barra lateral em Menu Inferior */
+            .sidebar { 
+                width: 100%; 
+                height: auto; 
+                flex-direction: row; 
+                padding: 10px; 
+                position: fixed; 
+                bottom: 0; 
+                left: 0; 
+                border-right: none; 
+                border-top: 1px solid var(--border-glass); 
+                z-index: 1000; 
+                background: rgba(10, 13, 20, 0.98);
+                backdrop-filter: blur(10px);
+                justify-content: space-around;
+            }
+            
+            .logo { display: none; } /* Esconde a logo no menu inferior */
+            
+            .nav-menu { 
+                flex-direction: row; 
+                width: 100%; 
+                justify-content: space-around; 
+                gap: 5px; 
+                margin: 0;
+            }
+            
+            .nav-item { 
+                flex-direction: column; 
+                padding: 8px 10px; 
+                font-size: 0.7rem; 
+                gap: 5px; 
+                border-radius: 8px;
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .nav-item:hover, .nav-item.active { 
+                border-left: none; 
+                border-bottom: 3px solid var(--secondary); 
+                background: rgba(13, 148, 136, 0.1); 
+            }
+            
+            .logout-btn { margin-top: 0; }
+            
+            /* Ajustes do Conteúdo Principal */
+            .main-content { 
+                padding: 20px 15px 90px 15px; /* Adicionado padding inferior para o menu não sobrepor */
+            }
+            
+            .header { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 15px; 
+                margin-bottom: 25px;
+            }
+            
+            .header-actions { 
+                width: 100%; 
+                justify-content: space-between; 
+            }
+            
+            .stats-grid { 
+                grid-template-columns: 1fr; 
+                gap: 15px; 
+            }
+            
+            .table-controls { 
+                flex-direction: column; 
+                align-items: stretch; 
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .filters { 
+                flex-wrap: nowrap; 
+                overflow-x: auto; 
+                padding-bottom: 5px; 
+                -webkit-overflow-scrolling: touch; /* Suavidade no iOS */
+            }
+            .filters::-webkit-scrollbar { height: 4px; }
+            
+            .btn-export { margin-left: 0; }
+            
+            .search-box { 
+                width: 100%; 
+            }
+            
+            /* Container da tabela para rolar lateralmente no celular */
+            .table-container { 
+                overflow-x: auto; 
+                border-radius: 12px;
+            }
+            
+            table { 
+                min-width: 700px; /* Garante que a tabela tenha um tamanho mínimo pra dar scroll */
+            }
+            
+            th, td { 
+                padding: 12px 15px; 
+            }
+            
+            .modal-content {
+                padding: 20px;
+                width: 90%;
+            }
+            
+            .form-group[style*="display: flex"] {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            /* Centraliza o Toast no Mobile */
+            #toast { 
+                bottom: 90px; 
+                left: 50%;
+                right: auto;
+                transform: translate(-50%, 150%);
+                width: 90%;
+                justify-content: center;
+            }
+            #toast.show {
+                transform: translate(-50%, 0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -169,7 +303,7 @@
                         <button class="btn-filter" onclick="window.filtrar('pendente', this)">Pendentes</button>
                         <button class="btn-filter" onclick="window.filtrar('confirmado', this)">Confirmados</button>
                         <button class="btn-filter" onclick="window.filtrar('concluido', this)">Concluídos</button>
-                        <button class="btn-export" onclick="window.exportarCSV()"><i class="fas fa-file-excel"></i> Exportar CSV</button>
+                        <button class="btn-export" onclick="window.exportarCSV()"><i class="fas fa-file-excel"></i> Exportar</button>
                     </div>
                     <div class="search-box">
                         <i class="fas fa-search"></i>
@@ -282,27 +416,20 @@
             window.renderizarClientes(); 
         }, (error) => {
             console.error("Erro no Firestore:", error);
-            mostrarToast("Erro de permissão! Verifique as regras do Firestore.", true);
+            mostrarToast("Erro de permissão! Verifique as regras.", true);
         });
 
-        // ------------------------------------
         // LÓGICA DE NAVEGAÇÃO DE ABAS 
-        // ------------------------------------
         window.mudarAba = (aba, elemento) => {
-            // Remove a classe active de todos os menus
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-            // Adiciona no menu clicado
             elemento.classList.add('active');
 
-            // Esconde todas as telas
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-clientes').classList.add('hidden');
             document.getElementById('view-servicos').classList.add('hidden');
 
-            // Mostra a tela que o usuário escolheu
             document.getElementById(`view-${aba}`).classList.remove('hidden');
 
-            // Atualiza o Título
             if(aba === 'dashboard') {
                 document.getElementById('pageTitle').textContent = 'Gestão de Agendamentos';
                 window.renderizarPainel();
@@ -314,9 +441,7 @@
             }
         };
 
-        // ------------------------------------
         // LÓGICA DO DASHBOARD (TELA 1)
-        // ------------------------------------
         window.renderizarPainel = () => {
             const tbody = document.getElementById('tabelaAgendamentos');
             if(!tbody) return;
@@ -409,9 +534,7 @@
             document.getElementById('rendaEstimada').textContent = `R$ ${rendaEstimadaHoje},00`;
         };
 
-        // ------------------------------------
         // LÓGICA DE CLIENTES (TELA 2)
-        // ------------------------------------
         window.renderizarClientes = () => {
             const tbody = document.getElementById('tabelaClientes');
             if(!tbody) return; 
@@ -440,7 +563,6 @@
 
             let clientesArray = Object.values(clientesMap);
             
-            // Atualizando "Total na Base"
             const spanTotalGeral = document.getElementById('totalGeral');
             if(spanTotalGeral) spanTotalGeral.textContent = clientesArray.length;
 
@@ -451,7 +573,6 @@
                 );
             }
 
-            // Ordenando por quem gastou mais
             clientesArray.sort((a, b) => b.totalGasto - a.totalGasto);
 
             if(clientesArray.length === 0) {
@@ -471,14 +592,12 @@
             });
         };
 
-        // ------------------------------------
         // FUNÇÕES DO BANCO DE DADOS
-        // ------------------------------------
         window.alterarStatus = async function(idFirebase, novoStatus) {
             try {
                 await updateDoc(doc(db, "agendamentos", idFirebase), { status: novoStatus });
                 mostrarToast(`Status: ${novoStatus.toUpperCase()}`);
-            } catch (error) { mostrarToast("Erro ao atualizar o status", true); }
+            } catch (error) { mostrarToast("Erro ao atualizar", true); }
         }
 
         window.deletarAgendamento = async function(idFirebase) {
@@ -515,7 +634,7 @@
                 window.fecharModal();
                 mostrarToast("Salvo com sucesso!");
             } catch (error) { 
-                mostrarToast("Erro de permissão no Firebase.", true); 
+                mostrarToast("Erro ao salvar.", true); 
                 console.error(error);
             } finally { 
                 btn.textContent = "Salvar Agendamento"; btn.disabled = false;
