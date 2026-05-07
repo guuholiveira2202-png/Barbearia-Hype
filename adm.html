@@ -2,297 +2,247 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BarberShop | Painel Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BarberShop | Painel Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@300;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary: #E6B325; --primary-hover: #FFC933; --secondary: #0D9488;
-            --bg-dark: #030507; --bg-panel: #0a0d14; --bg-glass: rgba(255, 255, 255, 0.02); 
-            --border-glass: rgba(255, 255, 255, 0.05); --text-light: #f8fafc;
-            --text-muted: #9ca3af; --transition: 0.3s ease; --radius: 16px;
+            /* Paleta Premium: Fundo Escuro com Dourado e tons de Esmeralda */
+            --primary: #D4AF37;       /* Dourado Luxo */
+            --primary-hover: #F1C40F;
+            --secondary: #10B981;     /* Esmeralda / Sucesso */
+            --bg-dark: #0B0E14;       /* Fundo principal profundo */
+            --bg-panel: #151A23;      /* Fundo dos painéis e sidebar */
+            --bg-glass: rgba(255, 255, 255, 0.03); 
+            --border-glass: rgba(255, 255, 255, 0.06); 
+            --text-light: #F8FAFC;
+            --text-muted: #94A3B8; 
+            --danger: #EF4444;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            --radius: 16px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-light); display: flex; height: 100vh; overflow: hidden; }
-        h1, h2, h3, .logo { font-family: 'Poppins', sans-serif; }
+        h1, h2, h3, .logo, .date-time { font-family: 'Poppins', sans-serif; }
         
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
+        /* Scrollbar customizada e discreta */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #2A3241; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3B4455; }
 
-        /* Classe crucial para esconder as abas */
         .hidden { display: none !important; }
+        
+        /* Animação suave para as abas */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
-        .logo { font-size: 1.5rem; font-weight: 800; color: var(--text-light); margin-bottom: 50px; text-align: center; }
-        .logo span { color: var(--primary); font-weight: 300; }
+        /* ================= SIDEBAR ================= */
+        .sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; padding: 35px 20px; z-index: 100; box-shadow: 5px 0 20px rgba(0,0,0,0.2); }
+        .logo { font-size: 1.6rem; font-weight: 800; color: var(--text-light); margin-bottom: 50px; text-align: center; letter-spacing: 1px; }
+        .logo span { color: var(--primary); font-weight: 400; }
         
         .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
-        .nav-item { display: flex; align-items: center; gap: 15px; padding: 15px 20px; color: var(--text-muted); text-decoration: none; border-radius: 12px; transition: var(--transition); font-weight: 500; cursor: pointer; }
-        .nav-item:hover, .nav-item.active { background: rgba(13, 148, 136, 0.1); color: var(--secondary); border-left: 3px solid var(--secondary); }
-        .nav-item i { font-size: 1.2rem; width: 20px; text-align: center; }
-        .logout-btn { margin-top: auto; color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+        .nav-item { display: flex; align-items: center; gap: 15px; padding: 14px 20px; color: var(--text-muted); text-decoration: none; border-radius: 12px; transition: var(--transition); font-weight: 500; cursor: pointer; border-left: 3px solid transparent; }
+        .nav-item:hover, .nav-item.active { background: linear-gradient(90deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%); color: var(--primary); border-left: 3px solid var(--primary); }
+        .nav-item i { font-size: 1.2rem; width: 24px; text-align: center; }
+        .logout-btn { margin-top: auto; color: var(--danger); }
+        .logout-btn:hover { background: rgba(239, 68, 68, 0.1); border-left-color: var(--danger); color: var(--danger); }
 
-        .main-content { flex-grow: 1; padding: 40px; display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+        /* ================= MAIN CONTENT ================= */
+        .main-content { flex-grow: 1; padding: 40px 50px; display: flex; flex-direction: column; overflow-y: auto; position: relative; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; position: relative; z-index: 1; }
-        .header h1 { font-size: 2rem; font-weight: 600; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.2rem; font-weight: 600; letter-spacing: -0.5px; }
+        .header p { color: var(--text-muted); margin-top: 5px; font-size: 0.95rem; }
         .header-actions { display: flex; gap: 20px; align-items: center; }
-        .btn-add { background: var(--primary); color: var(--bg-dark); border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; gap: 8px; align-items: center; }
-        .btn-add:hover { background: var(--primary-hover); transform: translateY(-2px); }
-
-        .user-profile { display: flex; align-items: center; gap: 12px; background: var(--bg-glass); padding: 8px 20px; border-radius: 50px; border: 1px solid var(--border-glass); }
-        .user-profile img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 40px; position: relative; z-index: 1; }
-        .stat-card { background: var(--bg-glass); backdrop-filter: blur(10px); padding: 25px; border-radius: var(--radius); border: 1px solid var(--border-glass); display: flex; align-items: center; gap: 20px; }
-        .stat-icon { width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-        .icon-gold { background: rgba(230, 179, 37, 0.1); color: var(--primary); }
-        .icon-teal { background: rgba(13, 148, 136, 0.1); color: var(--secondary); }
-        .icon-blue { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-        .stat-info h3 { font-size: 1.8rem; margin-bottom: 5px; }
-        .stat-info p { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
-
-        .table-container { background: var(--bg-panel); border-radius: var(--radius); border: 1px solid var(--border-glass); overflow: hidden; position: relative; z-index: 1; }
-        .table-controls { padding: 20px 30px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); flex-wrap: wrap; gap: 15px; }
         
-        .filters { display: flex; gap: 10px; align-items: center; }
-        .btn-filter { background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); color: var(--text-muted); padding: 8px 16px; border-radius: 50px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
-        .btn-filter:hover, .btn-filter.active { background: var(--primary); color: var(--bg-dark); border-color: var(--primary); }
-        
-        .btn-export { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; display: flex; gap: 8px; align-items: center; margin-left: 15px; white-space: nowrap; }
-        .btn-export:hover { background: #10b981; color: #fff; }
+        .btn-add { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #000; border: none; padding: 12px 24px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; gap: 8px; align-items: center; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4); }
 
-        .search-box { display: flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border-glass); padding: 10px 15px; border-radius: 8px; width: 280px; }
-        .search-box i { color: var(--text-muted); margin-right: 10px; }
+        .user-profile { display: flex; align-items: center; gap: 12px; background: var(--bg-panel); padding: 8px 24px 8px 8px; border-radius: 50px; border: 1px solid var(--border-glass); }
+        .user-profile img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+        .user-profile span { font-weight: 500; font-size: 0.95rem; }
+
+        /* ================= DASHBOARD STATS ================= */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .stat-card { background: var(--bg-panel); padding: 25px; border-radius: var(--radius); border: 1px solid var(--border-glass); display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: var(--transition); }
+        .stat-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.1); }
+        .stat-icon { width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+        .icon-gold { background: rgba(212, 175, 55, 0.1); color: var(--primary); }
+        .icon-green { background: rgba(16, 185, 129, 0.1); color: var(--secondary); }
+        .icon-blue { background: rgba(59, 130, 246, 0.1); color: #3B82F6; }
+        .stat-info h3 { font-size: 2rem; margin-bottom: 2px; }
+        .stat-info p { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ================= TABLES & CONTROLS ================= */
+        .table-container { background: var(--bg-panel); border-radius: var(--radius); border: 1px solid var(--border-glass); box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        .table-controls { padding: 20px 30px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        
+        .filters { display: flex; gap: 8px; align-items: center; }
+        .btn-filter { background: transparent; border: 1px solid var(--border-glass); color: var(--text-muted); padding: 8px 18px; border-radius: 50px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; font-weight: 600; }
+        .btn-filter:hover, .btn-filter.active { background: var(--bg-glass); color: var(--text-light); border-color: var(--primary); }
+        
+        .btn-export { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--secondary); padding: 8px 18px; border-radius: 8px; cursor: pointer; transition: var(--transition); font-size: 0.85rem; display: flex; gap: 8px; align-items: center; margin-left: 10px; font-weight: 600; }
+        .btn-export:hover { background: var(--secondary); color: #fff; }
+
+        .search-box { display: flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border-glass); padding: 10px 18px; border-radius: 12px; width: 300px; transition: var(--transition); }
+        .search-box:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1); }
+        .search-box i { color: var(--text-muted); margin-right: 12px; font-size: 0.9rem; }
         .search-box input { background: transparent; border: none; color: var(--text-light); outline: none; width: 100%; font-size: 0.9rem; }
 
         table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 15px 30px; }
-        th { color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; border-bottom: 1px solid var(--border-glass); background: rgba(255, 255, 255, 0.01); white-space: nowrap; }
-        tbody tr { border-bottom: 1px solid rgba(255, 255, 255, 0.02); transition: var(--transition); }
-        tbody tr:hover { background: rgba(255, 255, 255, 0.02); }
+        th, td { padding: 18px 30px; }
+        th { color: var(--text-muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid var(--border-glass); background: rgba(0, 0, 0, 0.2); letter-spacing: 0.5px; }
+        tbody tr { border-bottom: 1px solid var(--border-glass); transition: var(--transition); }
+        tbody tr:hover { background: var(--bg-glass); }
 
-        .date-separator td { background: rgba(230, 179, 37, 0.05); color: var(--primary); font-family: 'Poppins', sans-serif; font-weight: 600; letter-spacing: 1px; font-size: 0.9rem; border-bottom: 1px solid rgba(230, 179, 37, 0.2) !important; padding: 10px 30px; }
-        .date-separator:hover { background: rgba(230, 179, 37, 0.05) !important; }
+        .date-separator td { background: rgba(212, 175, 55, 0.03); color: var(--primary); font-weight: 600; font-size: 0.9rem; border-bottom: 1px solid rgba(212, 175, 55, 0.1) !important; padding: 12px 30px; letter-spacing: 1px; }
 
-        .client-info { display: flex; flex-direction: column; white-space: nowrap; }
-        .client-name { font-weight: 600; color: var(--text-light); font-size: 1rem; margin-bottom: 3px; }
-        .client-phone { color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
-        .service-badge { display: inline-block; padding: 6px 12px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; font-size: 0.85rem; white-space: nowrap; }
-        .date-time { font-family: 'Poppins', sans-serif; font-weight: 500; color: var(--primary); white-space: nowrap; }
+        .client-info { display: flex; flex-direction: column; gap: 4px; }
+        .client-name { font-weight: 600; color: var(--text-light); font-size: 1.05rem; }
+        .client-phone { color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 6px; }
+        
+        .service-badge { display: inline-block; padding: 6px 14px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; font-size: 0.85rem; font-weight: 500; }
+        .date-time { font-weight: 600; color: var(--primary); font-size: 1rem; }
 
-        .status { padding: 6px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; display: inline-block; }
-        .status.pendente { background: rgba(230, 179, 37, 0.15); color: var(--primary); border: 1px solid rgba(230, 179, 37, 0.3); }
-        .status.confirmado { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .status.concluido { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .status { padding: 6px 16px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-block; letter-spacing: 0.5px; }
+        .status.pendente { background: rgba(212, 175, 55, 0.15); color: var(--primary); border: 1px solid rgba(212, 175, 55, 0.3); }
+        .status.confirmado { background: rgba(16, 185, 129, 0.15); color: var(--secondary); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .status.concluido { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--border-glass); }
 
         .actions { display: flex; gap: 8px; }
-        .btn-action { width: 32px; height: 32px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); color: #fff; }
-        .btn-confirm { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .btn-confirm:hover { background: #10b981; color: #fff; }
-        .btn-complete { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-        .btn-complete:hover { background: #3b82f6; color: #fff; }
-        .btn-delete { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .btn-delete:hover { background: #ef4444; color: #fff; }
+        .btn-action { width: 36px; height: 36px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); font-size: 0.9rem; }
+        .btn-confirm { background: rgba(16, 185, 129, 0.1); color: var(--secondary); }
+        .btn-confirm:hover { background: var(--secondary); color: #fff; transform: scale(1.05); }
+        .btn-complete { background: rgba(59, 130, 246, 0.1); color: #3B82F6; }
+        .btn-complete:hover { background: #3B82F6; color: #fff; transform: scale(1.05); }
+        .btn-delete { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .btn-delete:hover { background: var(--danger); color: #fff; transform: scale(1.05); }
 
-        #toast { position: fixed; bottom: 30px; right: 30px; background: var(--bg-panel); border: 1px solid var(--secondary); color: #fff; padding: 15px 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 15px; transform: translateX(150%); transition: 0.4s ease; z-index: 2000; }
+        /* ================= MODALS & TOAST ================= */
+        #toast { position: fixed; bottom: 30px; right: 30px; background: var(--bg-panel); border-left: 4px solid var(--secondary); color: #fff; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 15px; transform: translateX(150%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; font-weight: 500; }
         #toast.show { transform: translateX(0); }
         
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 3000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 3000; display: none; align-items: center; justify-content: center; opacity: 0; transition: var(--transition); }
         .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-content { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 30px; border-radius: var(--radius); width: 100%; max-width: 450px; transform: scale(0.9); transition: 0.3s; }
-        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content { background: var(--bg-panel); border: 1px solid var(--border-glass); padding: 35px; border-radius: 20px; width: 100%; max-width: 480px; transform: scale(0.95) translateY(20px); transition: var(--transition); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
         
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .modal-header h2 { font-size: 1.5rem; }
-        .close-modal { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+        .modal-header h2 { font-size: 1.6rem; font-weight: 600; }
+        .close-modal { background: rgba(255,255,255,0.05); border: none; color: var(--text-muted); width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
+        .close-modal:hover { background: rgba(255,255,255,0.1); color: #fff; }
         
-        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
-        .form-group label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-        .form-group input, .form-group select { padding: 12px 15px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-glass); border-radius: 8px; color: #fff; outline: none; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+        .form-group label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        .form-group input, .form-group select { padding: 14px 16px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 10px; color: #fff; outline: none; transition: var(--transition); font-size: 0.95rem; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); background: rgba(0,0,0,0.5); }
         
-        .btn-submit { width: 100%; background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: 700; margin-top: 10px; cursor: pointer; transition: 0.3s; }
-        .btn-submit:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-submit { width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; margin-top: 10px; cursor: pointer; transition: var(--transition); }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3); }
 
-        /* ==========================================
-           RESPONSIVIDADE (AJUSTES PARA CELULAR)
-           ========================================== */
+        /* ================= RESPONSIVO PRO (MOBILE) ================= */
         @media (max-width: 768px) {
-            body { 
-                flex-direction: column; 
-            }
+            body { flex-direction: column; }
             
-            /* Transforma a barra lateral em Menu Inferior */
-            .sidebar { 
-                width: 100%; 
-                height: auto; 
-                flex-direction: row; 
-                padding: 10px; 
-                position: fixed; 
-                bottom: 0; 
-                left: 0; 
-                border-right: none; 
-                border-top: 1px solid var(--border-glass); 
-                z-index: 1000; 
-                background: rgba(10, 13, 20, 0.98);
-                backdrop-filter: blur(10px);
-                justify-content: space-around;
-            }
+            /* Bottom Nav (App Nativo) */
+            .sidebar { width: 100%; height: 70px; flex-direction: row; padding: 0; position: fixed; bottom: 0; left: 0; border-right: none; border-top: 1px solid var(--border-glass); background: rgba(21, 26, 35, 0.95); backdrop-filter: blur(15px); justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); }
+            .logo { display: none; } 
             
-            .logo { display: none; } /* Esconde a logo no menu inferior */
-            
-            .nav-menu { 
-                flex-direction: row; 
-                width: 100%; 
-                justify-content: space-around; 
-                gap: 5px; 
-                margin: 0;
-            }
-            
-            .nav-item { 
-                flex-direction: column; 
-                padding: 8px 10px; 
-                font-size: 0.7rem; 
-                gap: 5px; 
-                border-radius: 8px;
-                flex: 1;
-                justify-content: center;
-            }
-            
-            .nav-item:hover, .nav-item.active { 
-                border-left: none; 
-                border-bottom: 3px solid var(--secondary); 
-                background: rgba(13, 148, 136, 0.1); 
-            }
-            
-            .logout-btn { margin-top: 0; }
-            
-            /* Ajustes do Conteúdo Principal */
-            .main-content { 
-                padding: 20px 15px 90px 15px; /* Adicionado padding inferior para o menu não sobrepor */
-            }
-            
-            .header { 
-                flex-direction: column; 
-                align-items: flex-start; 
-                gap: 15px; 
-                margin-bottom: 25px;
-            }
-            
-            .header-actions { 
-                width: 100%; 
-                justify-content: space-between; 
-            }
-            
-            .stats-grid { 
-                grid-template-columns: 1fr; 
-                gap: 15px; 
-            }
-            
-            .table-controls { 
-                flex-direction: column; 
-                align-items: stretch; 
-                padding: 15px;
-                gap: 15px;
-            }
-            
-            .filters { 
-                flex-wrap: nowrap; 
-                overflow-x: auto; 
-                padding-bottom: 5px; 
-                -webkit-overflow-scrolling: touch; /* Suavidade no iOS */
-            }
-            .filters::-webkit-scrollbar { height: 4px; }
-            
-            .btn-export { margin-left: 0; }
-            
-            .search-box { 
-                width: 100%; 
-            }
-            
-            /* Container da tabela para rolar lateralmente no celular */
-            .table-container { 
-                overflow-x: auto; 
-                border-radius: 12px;
-            }
-            
-            table { 
-                min-width: 700px; /* Garante que a tabela tenha um tamanho mínimo pra dar scroll */
-            }
-            
-            th, td { 
-                padding: 12px 15px; 
-            }
-            
-            .modal-content {
-                padding: 20px;
-                width: 90%;
-            }
-            
-            .form-group[style*="display: flex"] {
-                flex-direction: column;
-                gap: 15px;
-            }
+            .nav-menu { flex-direction: row; width: 100%; justify-content: space-around; margin: 0; gap: 0; height: 100%; }
+            .nav-item { flex-direction: column; padding: 8px 0; font-size: 0.7rem; gap: 4px; border-radius: 0; flex: 1; justify-content: center; border-left: none !important; border-top: 3px solid transparent; }
+            .nav-item i { font-size: 1.3rem; margin-bottom: 2px; }
+            .nav-item:hover, .nav-item.active { background: transparent; border-top: 3px solid var(--primary); color: var(--primary); }
+            .logout-btn { display: none; /* Esconde no menu inferior para poupar espaço */ }
 
-            /* Centraliza o Toast no Mobile */
-            #toast { 
-                bottom: 90px; 
-                left: 50%;
-                right: auto;
-                transform: translate(-50%, 150%);
-                width: 90%;
-                justify-content: center;
-            }
-            #toast.show {
-                transform: translate(-50%, 0);
-            }
+            /* Ajustes de Layout Mobile */
+            .main-content { padding: 20px 15px 90px 15px; } 
+            .header { flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
+            .header h1 { font-size: 1.8rem; }
+            .header-actions { width: 100%; justify-content: space-between; }
+            .user-profile { padding: 6px; }
+            .user-profile span { display: none; } 
+            
+            .stats-grid { grid-template-columns: 1fr; gap: 15px; }
+            .stat-card { padding: 20px; }
+            .stat-icon { width: 50px; height: 50px; font-size: 1.3rem; }
+
+            .table-controls { flex-direction: column; align-items: stretch; padding: 15px; gap: 15px; }
+            .filters { overflow-x: auto; padding-bottom: 5px; -webkit-overflow-scrolling: touch; }
+            .btn-filter { white-space: nowrap; padding: 8px 14px; }
+            .btn-export { margin-left: 0; justify-content: center; }
+            .search-box { width: 100%; }
+
+            /* Tabelas em Cards no Celular */
+            table, thead, tbody, th, td, tr { display: block; }
+            thead tr { display: none; } 
+            
+            tbody tr { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+            
+            .date-separator { padding: 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; margin-bottom: 5px !important;}
+            .date-separator td { text-align: center !important; border-bottom: none !important; padding: 10px !important; color: var(--text-muted); font-size: 0.85rem;}
+            .date-separator td::before { display: none; }
+
+            td { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: right; }
+            td:last-child { border-bottom: 0; padding-bottom: 0; }
+            
+            td::before { content: attr(data-label); font-weight: 600; color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; text-align: left; margin-right: 15px; }
+
+            .client-info { text-align: right; align-items: flex-end; }
+            .actions { width: 100%; justify-content: flex-end; }
+
+            .modal-content { padding: 25px 20px; width: 92%; }
+            .form-group[style*="display: flex"] { flex-direction: column; gap: 18px; }
+
+            #toast { bottom: 90px; left: 50%; right: auto; transform: translate(-50%, 150%); width: 90%; justify-content: center; border-left: none; border-bottom: 4px solid var(--secondary); }
+            #toast.show { transform: translate(-50%, 0); }
         }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="logo">BARBER<span>SHOP.</span></div>
+        <div class="logo">BARBER<span>PRO</span></div>
         <ul class="nav-menu">
-            <li class="nav-item active" onclick="window.mudarAba('dashboard', this)"><i class="fas fa-th-large"></i> Dashboard</li>
-            <li class="nav-item" onclick="window.mudarAba('clientes', this)"><i class="fas fa-users"></i> Clientes</li>
-            <li class="nav-item" onclick="window.mudarAba('servicos', this)"><i class="fas fa-cut"></i> Serviços</li>
-            <li class="nav-item logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</li>
+            <li class="nav-item active" onclick="window.mudarAba('dashboard', this)"><i class="fas fa-th-large"></i> <span>Dashboard</span></li>
+            <li class="nav-item" onclick="window.mudarAba('clientes', this)"><i class="fas fa-users"></i> <span>Clientes</span></li>
+            <li class="nav-item" onclick="window.mudarAba('servicos', this)"><i class="fas fa-cut"></i> <span>Serviços</span></li>
+            <li class="nav-item logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></li>
         </ul>
     </aside>
 
     <main class="main-content">
         <header class="header">
             <div>
-                <h1 id="pageTitle">Gestão de Agendamentos</h1>
-                <p style="color: var(--text-muted); margin-top: 5px;" id="dataAtualDisplay">Carregando...</p>
+                <h1 id="pageTitle">Agenda Principal</h1>
+                <p id="dataAtualDisplay">Carregando data...</p>
             </div>
             <div class="header-actions">
                 <button class="btn-add" onclick="window.abrirModal()"><i class="fas fa-plus"></i> Novo Cliente</button>
                 <div class="user-profile">
-                    <img src="https://ui-avatars.com/api/?name=Admin+Barber&background=E6B325&color=030507" alt="Admin">
-                    <span>Admin</span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=D4AF37&color=0B0E14" alt="Admin">
+                    <span>Administrador</span>
                 </div>
             </div>
         </header>
 
-        <div id="view-dashboard">
+        <div id="view-dashboard" class="fade-in">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon icon-teal"><i class="far fa-calendar-check"></i></div>
+                    <div class="stat-icon icon-green"><i class="far fa-calendar-check"></i></div>
                     <div class="stat-info"><h3 id="totalHoje">0</h3><p>Agendamentos Hoje</p></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon icon-gold"><i class="fas fa-wallet"></i></div>
-                    <div class="stat-info"><h3 id="rendaEstimada">R$ 0</h3><p>Renda Projetada (Hoje)</p></div>
+                    <div class="stat-icon icon-gold"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-info"><h3 id="rendaEstimada">R$ 0</h3><p>Faturamento Projetado</p></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon-blue"><i class="fas fa-users"></i></div>
-                    <div class="stat-info"><h3 id="totalGeral">0</h3><p>Total na Base</p></div>
+                    <div class="stat-info"><h3 id="totalGeral">0</h3><p>Clientes Registrados</p></div>
                 </div>
             </div>
 
@@ -307,7 +257,7 @@
                     </div>
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" placeholder="Buscar por nome ou fone..." oninput="window.buscar(this.value)">
+                        <input type="text" id="searchInput" placeholder="Buscar cliente ou telefone..." oninput="window.buscar(this.value)">
                     </div>
                 </div>
                 
@@ -320,31 +270,33 @@
             </div>
         </div>
 
-        <div id="view-clientes" class="hidden">
+        <div id="view-clientes" class="hidden fade-in">
             <div class="table-container">
                 <div class="table-controls">
                     <div class="filters">
-                        <h3 style="color: var(--text-muted); font-size: 1rem; font-weight: 500;">Sua Base de Clientes</h3>
+                        <h3 style="color: var(--text-light); font-size: 1.1rem; font-weight: 600;">Diretório de Clientes</h3>
                     </div>
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Buscar cliente..." oninput="window.buscarCliente(this.value)">
+                        <input type="text" placeholder="Buscar na base..." oninput="window.buscarCliente(this.value)">
                     </div>
                 </div>
                 <table>
                     <thead>
-                        <tr><th>Nome do Cliente</th><th>Telefone</th><th>Total de Visitas</th><th>Total Gasto</th></tr>
+                        <tr><th>Cliente</th><th>Contato</th><th>Frequência</th><th>LTV (Gasto Total)</th></tr>
                     </thead>
                     <tbody id="tabelaClientes"></tbody>
                 </table>
             </div>
         </div>
 
-        <div id="view-servicos" class="hidden">
-            <div class="table-container" style="padding: 40px; text-align: center;">
-                <i class="fas fa-tools" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
-                <h2>Página de Serviços</h2>
-                <p style="color: var(--text-muted); margin-top: 10px;">Em breve você poderá gerenciar seus serviços aqui.</p>
+        <div id="view-servicos" class="hidden fade-in">
+            <div class="table-container" style="padding: 60px 20px; text-align: center;">
+                <div style="background: rgba(212, 175, 55, 0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                    <i class="fas fa-tools" style="font-size: 2.5rem; color: var(--primary);"></i>
+                </div>
+                <h2 style="font-size: 1.8rem; margin-bottom: 10px;">Gerenciamento de Serviços</h2>
+                <p style="color: var(--text-muted); max-width: 400px; margin: 0 auto;">Em breve você poderá adicionar, editar e excluir os serviços e valores oferecidos na sua barbearia por aqui.</p>
             </div>
         </div>
 
@@ -354,34 +306,48 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Novo Agendamento</h2>
-                <button class="close-modal" onclick="window.fecharModal()">&times;</button>
+                <button class="close-modal" onclick="window.fecharModal()"><i class="fas fa-times"></i></button>
             </div>
             <form id="formNovo" onsubmit="window.salvarNovoAgendamento(event)">
-                <div class="form-group"><label>Nome do Cliente</label><input type="text" id="addNome" required placeholder="Ex: João Silva"></div>
-                <div class="form-group"><label>WhatsApp</label><input type="text" id="addFone" required placeholder="(11) 99999-9999" maxlength="15"></div>
                 <div class="form-group">
-                    <label>Serviço</label>
+                    <label>Nome do Cliente</label>
+                    <input type="text" id="addNome" required placeholder="Ex: João Silva">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp</label>
+                    <input type="tel" id="addFone" required placeholder="(11) 99999-9999" maxlength="15">
+                </div>
+                <div class="form-group">
+                    <label>Serviço Desejado</label>
                     <select id="addServico" required>
                         <option value="Corte Clássico">Corte Clássico (R$ 50)</option>
                         <option value="Barba de Respeito">Barba de Respeito (R$ 40)</option>
-                        <option value="Combo Premium">Combo Premium (R$ 80)</option>
+                        <option value="Corte + Barba (Combo)">Corte + Barba Combo (R$ 80)</option>
+                        <option value="Sobrancelha">Sobrancelha (R$ 15)</option>
                     </select>
                 </div>
                 <div style="display: flex; gap: 15px;">
-                    <div class="form-group" style="flex: 1;"><label>Data</label><input type="date" id="addData" required></div>
-                    <div class="form-group" style="flex: 1;"><label>Hora</label><input type="time" id="addHora" required></div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Data</label>
+                        <input type="date" id="addData" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Horário</label>
+                        <input type="time" id="addHora" required>
+                    </div>
                 </div>
-                <button type="submit" class="btn-submit">Salvar Agendamento</button>
+                <button type="submit" class="btn-submit">Confirmar Agendamento</button>
             </form>
         </div>
     </div>
 
-    <div id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Sucesso!</span></div>
+    <div id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Operação realizada!</span></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
+        // MANTENDO SUAS CREDENCIAIS
         const firebaseConfig = {
             apiKey: "AIzaSyAAy9i8sY5hCa9qyO1hnwAU6bimwTNKobQ",
             authDomain: "barbearia-a6c75.firebaseapp.com",
@@ -400,294 +366,241 @@
         let termoBusca = '';
         let termoBuscaCliente = '';
 
+        // Formatação de datas relativas
         const hojeObj = new Date();
         const dataLocalFormatada = `${String(hojeObj.getDate()).padStart(2, '0')}/${String(hojeObj.getMonth() + 1).padStart(2, '0')}/${hojeObj.getFullYear()}`;
-        
-        const amanhaObj = new Date();
-        amanhaObj.setDate(hojeObj.getDate() + 1);
+        const amanhaObj = new Date(); amanhaObj.setDate(hojeObj.getDate() + 1);
         const dataAmanhaFormatada = `${String(amanhaObj.getDate()).padStart(2, '0')}/${String(amanhaObj.getMonth() + 1).padStart(2, '0')}/${amanhaObj.getFullYear()}`;
 
-        document.getElementById('dataAtualDisplay').innerHTML = `Hoje é <strong style="color:var(--text-light)">${dataLocalFormatada}</strong>`;
+        // Opções de formatação elegante para exibição
+        const opcoesData = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('dataAtualDisplay').innerHTML = hojeObj.toLocaleDateString('pt-BR', opcoesData).replace(/^\w/, c => c.toUpperCase());
 
-        // FIREBASE LENDO DADOS
+        // Listener em Tempo Real (Firebase)
         onSnapshot(collection(db, "agendamentos"), (snapshot) => {
             dadosDoBanco = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             window.renderizarPainel();
             window.renderizarClientes(); 
         }, (error) => {
-            console.error("Erro no Firestore:", error);
-            mostrarToast("Erro de permissão! Verifique as regras.", true);
+            mostrarToast("Falha ao sincronizar dados.", true);
         });
 
-        // LÓGICA DE NAVEGAÇÃO DE ABAS 
+        // Navegação entre abas
         window.mudarAba = (aba, elemento) => {
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
             elemento.classList.add('active');
 
-            document.getElementById('view-dashboard').classList.add('hidden');
-            document.getElementById('view-clientes').classList.add('hidden');
-            document.getElementById('view-servicos').classList.add('hidden');
+            ['dashboard', 'clientes', 'servicos'].forEach(a => {
+                document.getElementById(`view-${a}`).classList.add('hidden');
+                document.getElementById(`view-${a}`).classList.remove('fade-in');
+            });
 
-            document.getElementById(`view-${aba}`).classList.remove('hidden');
+            const viewAtiva = document.getElementById(`view-${aba}`);
+            viewAtiva.classList.remove('hidden');
+            
+            // Força reflow para reativar animação
+            void viewAtiva.offsetWidth; 
+            viewAtiva.classList.add('fade-in');
 
-            if(aba === 'dashboard') {
-                document.getElementById('pageTitle').textContent = 'Gestão de Agendamentos';
-                window.renderizarPainel();
-            } else if(aba === 'clientes') {
-                document.getElementById('pageTitle').textContent = 'Base de Clientes';
-                window.renderizarClientes();
-            } else if(aba === 'servicos') {
-                document.getElementById('pageTitle').textContent = 'Serviços Oferecidos';
-            }
+            const titulos = { 'dashboard': 'Agenda Principal', 'clientes': 'Base de Clientes', 'servicos': 'Catálogo de Serviços' };
+            document.getElementById('pageTitle').textContent = titulos[aba];
+
+            if(aba === 'dashboard') window.renderizarPainel();
+            if(aba === 'clientes') window.renderizarClientes();
+            
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        // LÓGICA DO DASHBOARD (TELA 1)
+        // Renderiza Tabela Dashboard
         window.renderizarPainel = () => {
             const tbody = document.getElementById('tabelaAgendamentos');
             if(!tbody) return;
             tbody.innerHTML = ''; 
             
-            let totalAgendamentosHoje = 0;
-            let rendaEstimadaHoje = 0;
+            let totalHoje = 0; let rendaHoje = 0;
 
             const dadosFiltrados = dadosDoBanco.filter(a => {
-                const statusBanco = String(a.status || "pendente").toLowerCase();
-                const passaFiltro = filtroAtual === 'todos' || statusBanco === filtroAtual;
-                
-                const nomeSeguro = String(a.nome || "").toLowerCase();
-                const telSeguro = String(a.telefone || "").toLowerCase();
-                const passaBusca = nomeSeguro.includes(termoBusca) || telSeguro.includes(termoBusca);
-                
-                return passaFiltro && passaBusca;
+                const status = String(a.status || "pendente").toLowerCase();
+                const matchFiltro = filtroAtual === 'todos' || status === filtroAtual;
+                const matchBusca = (a.nome||'').toLowerCase().includes(termoBusca) || (a.telefone||'').includes(termoBusca);
+                return matchFiltro && matchBusca;
             });
 
+            // Ordenação cronológica (Data e Hora)
             dadosFiltrados.sort((a, b) => {
-                try {
-                    const dataA = a.data ? String(a.data).split('/').reverse().join('-') : '1970-01-01';
-                    const dataB = b.data ? String(b.data).split('/').reverse().join('-') : '1970-01-01';
-                    return new Date(`${dataA}T${a.hora || '00:00'}`) - new Date(`${dataB}T${b.hora || '00:00'}`);
-                } catch(e) { return 0; }
+                const dateA = new Date(`${(a.data||'').split('/').reverse().join('-')}T${a.hora||'00:00'}`);
+                const dateB = new Date(`${(b.data||'').split('/').reverse().join('-')}T${b.hora||'00:00'}`);
+                return dateA - dateB;
             });
 
+            // Calcula Métricas de Hoje
             dadosDoBanco.forEach(a => {
-                if (a.data === dataLocalFormatada && a.status !== "concluido") { 
-                    totalAgendamentosHoje++;
-                    if (a.status !== "cancelado") {
-                        rendaEstimadaHoje += Number(a.preco || 0);
-                    }
+                if (a.data === dataLocalFormatada && a.status !== "cancelado") { 
+                    if(a.status !== "concluido") totalHoje++;
+                    rendaHoje += Number(a.preco || 0);
                 }
             });
 
-            const agendamentosAgrupados = {};
-            dadosFiltrados.forEach(agendamento => {
-                const dataKey = agendamento.data || 'Sem Data';
-                if (!agendamentosAgrupados[dataKey]) {
-                    agendamentosAgrupados[dataKey] = [];
-                }
-                agendamentosAgrupados[dataKey].push(agendamento);
-            });
-
-            const datasOrdenadas = Object.keys(agendamentosAgrupados).sort((a, b) => {
-                if (a === 'Sem Data') return 1;
-                if (b === 'Sem Data') return -1;
-                return new Date(a.split('/').reverse().join('-')) - new Date(b.split('/').reverse().join('-'));
+            // Agrupa por Data
+            const agrupados = {};
+            dadosFiltrados.forEach(ag => {
+                const d = ag.data || 'Sem Data';
+                if (!agrupados[d]) agrupados[d] = [];
+                agrupados[d].push(ag);
             });
 
             if(dadosFiltrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">Nenhum agendamento encontrado.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:40px; color:var(--text-muted);">Nenhum agendamento encontrado para este filtro.</td></tr>`;
             } else {
-                datasOrdenadas.forEach(dataGrupo => {
-                    let labelData = `<i class="far fa-calendar-alt"></i> DIA ${dataGrupo}`;
-                    if (dataGrupo === dataLocalFormatada) labelData = `<i class="fas fa-calendar-day"></i> HOJE (${dataGrupo})`;
-                    else if (dataGrupo === dataAmanhaFormatada) labelData = `<i class="fas fa-sun"></i> AMANHÃ (${dataGrupo})`;
+                Object.keys(agrupados).forEach(dataGrupo => {
+                    let label = `<i class="far fa-calendar-alt"></i> ${dataGrupo}`;
+                    if (dataGrupo === dataLocalFormatada) label = `<i class="fas fa-calendar-day"></i> HOJE, ${dataGrupo}`;
+                    else if (dataGrupo === dataAmanhaFormatada) label = `<i class="fas fa-sun"></i> AMANHÃ, ${dataGrupo}`;
 
-                    const trSeparador = document.createElement('tr');
-                    trSeparador.className = 'date-separator';
-                    trSeparador.innerHTML = `<td colspan="5">${labelData}</td>`;
-                    tbody.appendChild(trSeparador);
+                    tbody.insertAdjacentHTML('beforeend', `<tr class="date-separator"><td colspan="5">${label}</td></tr>`);
 
-                    agendamentosAgrupados[dataGrupo].forEach(agendamento => {
-                        let botoesAcao = '';
-                        const statusAtual = String(agendamento.status || 'pendente').toLowerCase();
-                        
-                        if(statusAtual === 'pendente') {
-                            botoesAcao += `<button onclick="window.alterarStatus('${agendamento.id}', 'confirmado')" class="btn-action btn-confirm" title="Confirmar"><i class="fas fa-check"></i></button>`;
-                        } else if(statusAtual === 'confirmado') {
-                            botoesAcao += `<button onclick="window.alterarStatus('${agendamento.id}', 'concluido')" class="btn-action btn-complete" title="Finalizar"><i class="fas fa-flag-checkered"></i></button>`;
-                        }
-                        botoesAcao += `<button onclick="window.deletarAgendamento('${agendamento.id}')" class="btn-action btn-delete" title="Excluir"><i class="fas fa-trash"></i></button>`;
+                    agrupados[dataGrupo].forEach(ag => {
+                        const status = (ag.status || 'pendente').toLowerCase();
+                        let btns = '';
+                        if(status === 'pendente') btns += `<button onclick="window.alterarStatus('${ag.id}', 'confirmado')" class="btn-action btn-confirm" title="Confirmar Presença"><i class="fas fa-check"></i></button>`;
+                        if(status === 'confirmado') btns += `<button onclick="window.alterarStatus('${ag.id}', 'concluido')" class="btn-action btn-complete" title="Finalizar Atendimento"><i class="fas fa-flag-checkered"></i></button>`;
+                        btns += `<button onclick="window.deletarAgendamento('${ag.id}')" class="btn-action btn-delete" title="Cancelar/Excluir"><i class="fas fa-trash"></i></button>`;
 
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td><div class="client-info"><span class="client-name">${agendamento.nome || '-'}</span><span class="client-phone"><i class="fab fa-whatsapp"></i> ${agendamento.telefone || '-'}</span></div></td>
-                            <td><span class="service-badge">${agendamento.servico || '-'}</span></td>
-                            <td><span class="date-time">${agendamento.hora || '-'}</span></td>
-                            <td><span class="status ${statusAtual}">${statusAtual}</span></td>
-                            <td><div class="actions">${botoesAcao}</div></td>
-                        `;
-                        tbody.appendChild(tr);
+                        tbody.insertAdjacentHTML('beforeend', `
+                            <tr>
+                                <td data-label="Cliente"><div class="client-info"><span class="client-name">${ag.nome||'-'}</span><span class="client-phone"><i class="fab fa-whatsapp"></i> ${ag.telefone||'-'}</span></div></td>
+                                <td data-label="Serviço"><span class="service-badge">${ag.servico||'-'}</span></td>
+                                <td data-label="Horário"><span class="date-time">${ag.hora||'-'}</span></td>
+                                <td data-label="Status"><span class="status ${status}">${status}</span></td>
+                                <td data-label="Ações"><div class="actions">${btns}</div></td>
+                            </tr>
+                        `);
                     });
                 });
             }
 
-            document.getElementById('totalHoje').textContent = totalAgendamentosHoje;
-            document.getElementById('rendaEstimada').textContent = `R$ ${rendaEstimadaHoje},00`;
+            document.getElementById('totalHoje').textContent = totalHoje;
+            document.getElementById('rendaEstimada').textContent = `R$ ${rendaHoje},00`;
         };
 
-        // LÓGICA DE CLIENTES (TELA 2)
+        // Renderiza Tabela Clientes
         window.renderizarClientes = () => {
             const tbody = document.getElementById('tabelaClientes');
             if(!tbody) return; 
             tbody.innerHTML = '';
 
-            const clientesMap = {};
-            
+            const mapaClientes = {};
             dadosDoBanco.forEach(ag => {
-                const fone = String(ag.telefone || 'Sem Telefone');
-                const nome = String(ag.nome || 'Cliente Desconhecido');
-                
-                if (!clientesMap[fone]) {
-                    clientesMap[fone] = {
-                        nome: nome,
-                        telefone: fone,
-                        totalVisitas: 0,
-                        totalGasto: 0
-                    };
-                }
-                
-                clientesMap[fone].totalVisitas += 1;
-                if(String(ag.status).toLowerCase() !== 'cancelado') {
-                    clientesMap[fone].totalGasto += Number(ag.preco || 0);
-                }
+                const f = ag.telefone || 'Sem Tel';
+                if (!mapaClientes[f]) mapaClientes[f] = { nome: ag.nome||'Desconhecido', telefone: f, visitas: 0, gasto: 0 };
+                mapaClientes[f].visitas += 1;
+                if(ag.status !== 'cancelado') mapaClientes[f].gasto += Number(ag.preco || 0);
             });
 
-            let clientesArray = Object.values(clientesMap);
-            
-            const spanTotalGeral = document.getElementById('totalGeral');
-            if(spanTotalGeral) spanTotalGeral.textContent = clientesArray.length;
+            let lista = Object.values(mapaClientes);
+            if(document.getElementById('totalGeral')) document.getElementById('totalGeral').textContent = lista.length;
 
-            if(termoBuscaCliente !== '') {
-                clientesArray = clientesArray.filter(c => 
-                    String(c.nome).toLowerCase().includes(termoBuscaCliente) || 
-                    String(c.telefone).includes(termoBuscaCliente)
-                );
+            if(termoBuscaCliente) lista = lista.filter(c => c.nome.toLowerCase().includes(termoBuscaCliente) || c.telefone.includes(termoBuscaCliente));
+            lista.sort((a, b) => b.gasto - a.gasto);
+
+            if(lista.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:40px; color:var(--text-muted);">Nenhum cliente registrado.</td></tr>`;
+            } else {
+                lista.forEach(c => {
+                    tbody.insertAdjacentHTML('beforeend', `
+                        <tr>
+                            <td data-label="Cliente"><span class="client-name" style="color:var(--text-light);">${c.nome}</span></td>
+                            <td data-label="Contato"><span class="client-phone"><i class="fab fa-whatsapp"></i> ${c.telefone}</span></td>
+                            <td data-label="Visitas"><span class="service-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--secondary);">${c.visitas}x</span></td>
+                            <td data-label="LTV"><span style="font-weight:700; color:var(--primary);">R$ ${c.gasto},00</span></td>
+                        </tr>
+                    `);
+                });
             }
-
-            clientesArray.sort((a, b) => b.totalGasto - a.totalGasto);
-
-            if(clientesArray.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">Nenhum cliente na base.</td></tr>`;
-                return;
-            }
-
-            clientesArray.forEach(cli => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><div class="client-info"><span class="client-name" style="color: var(--primary); font-weight: 600;">${cli.nome}</span></div></td>
-                    <td><span class="client-phone"><i class="fab fa-whatsapp"></i> ${cli.telefone}</span></td>
-                    <td><span class="service-badge" style="background: rgba(13, 148, 136, 0.1); color: var(--secondary); font-weight: bold;">${cli.totalVisitas} Visita(s)</span></td>
-                    <td><span class="status" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: bold;">R$ ${cli.totalGasto},00</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
         };
 
-        // FUNÇÕES DO BANCO DE DADOS
-        window.alterarStatus = async function(idFirebase, novoStatus) {
-            try {
-                await updateDoc(doc(db, "agendamentos", idFirebase), { status: novoStatus });
-                mostrarToast(`Status: ${novoStatus.toUpperCase()}`);
-            } catch (error) { mostrarToast("Erro ao atualizar", true); }
+        // Ações CRUD
+        window.alterarStatus = async (id, status) => {
+            try { await updateDoc(doc(db, "agendamentos", id), { status }); mostrarToast(`Marcado como ${status}!`); } 
+            catch (e) { mostrarToast("Erro de atualização.", true); }
         }
 
-        window.deletarAgendamento = async function(idFirebase) {
-            if(confirm("Deseja realmente excluir este agendamento?")) {
-                try {
-                    await deleteDoc(doc(db, "agendamentos", idFirebase));
-                    mostrarToast("Agendamento excluído!", true);
-                } catch (error) { mostrarToast("Erro ao deletar", true); }
+        window.deletarAgendamento = async (id) => {
+            if(confirm("Tem certeza que deseja apagar este registro permanentemente?")) {
+                try { await deleteDoc(doc(db, "agendamentos", id)); mostrarToast("Registro excluído."); } 
+                catch (e) { mostrarToast("Erro ao deletar.", true); }
             }
         }
 
-        window.salvarNovoAgendamento = async function(e) {
+        window.salvarNovoAgendamento = async (e) => {
             e.preventDefault();
             const btn = document.querySelector('.btn-submit');
-            btn.textContent = "Salvando..."; btn.disabled = true;
+            btn.textContent = "Processando..."; btn.disabled = true;
 
             const nome = document.getElementById('addNome').value.trim();
             const fone = document.getElementById('addFone').value;
             const servico = document.getElementById('addServico').value;
+            const isoDate = document.getElementById('addData').value;
+            const hora = document.getElementById('addHora').value;
             
+            const dataParts = isoDate.split('-');
+            const dataForm = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
+
+            // TRAVA DE SEGURANÇA: Evita agendamento no mesmo dia e hora
+            const horarioOcupado = dadosDoBanco.some(ag => ag.data === dataForm && ag.hora === hora && ag.status !== 'cancelado');
+            
+            if(horarioOcupado) {
+                mostrarToast("Horário Indisponível! Já existe um cliente neste horário.", true);
+                btn.textContent = "Confirmar Agendamento"; btn.disabled = false;
+                return; // Interrompe o salvamento
+            }
+
+            // Definição de Preço simplificada pelo nome do serviço
             let preco = 50;
             if(servico.includes('Barba')) preco = 40;
             if(servico.includes('Combo')) preco = 80;
-
-            const dataIso = document.getElementById('addData').value;
-            const dataParts = dataIso.split('-');
-            const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
-            const hora = document.getElementById('addHora').value;
+            if(servico.includes('Sobrancelha')) preco = 15;
 
             try {
-                await addDoc(collection(db, "agendamentos"), { 
-                    nome, telefone: fone, servico, preco, data: dataFormatada, hora, status: "pendente" 
-                });
+                await addDoc(collection(db, "agendamentos"), { nome, telefone: fone, servico, preco, data: dataForm, hora, status: "pendente" });
                 window.fecharModal();
-                mostrarToast("Salvo com sucesso!");
-            } catch (error) { 
-                mostrarToast("Erro ao salvar.", true); 
-                console.error(error);
+                mostrarToast("Cliente agendado com sucesso!");
+            } catch (err) { 
+                mostrarToast("Falha de conexão.", true); 
             } finally { 
-                btn.textContent = "Salvar Agendamento"; btn.disabled = false;
+                btn.textContent = "Confirmar Agendamento"; btn.disabled = false;
             }
         }
 
+        // Funções de Interface
         const modal = document.getElementById('modalAdd');
         window.abrirModal = () => modal.classList.add('active');
         window.fecharModal = () => { modal.classList.remove('active'); document.getElementById('formNovo').reset(); }
-        
-        window.filtrar = (filtro, btnElement) => {
-            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
-            btnElement.classList.add('active');
-            filtroAtual = filtro;
-            window.renderizarPainel();
-        }
-
-        window.buscar = (valor) => { termoBusca = String(valor).toLowerCase(); window.renderizarPainel(); }
-        window.buscarCliente = (valor) => { termoBuscaCliente = String(valor).toLowerCase(); window.renderizarClientes(); }
+        window.filtrar = (f, btn) => { document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filtroAtual = f; window.renderizarPainel(); }
+        window.buscar = v => { termoBusca = String(v).toLowerCase(); window.renderizarPainel(); }
+        window.buscarCliente = v => { termoBuscaCliente = String(v).toLowerCase(); window.renderizarClientes(); }
 
         window.exportarCSV = () => {
-            let csvContent = "\uFEFFID,Nome,Telefone,Serviço,Valor,Data,Hora,Status\n";
-            
-            dadosDoBanco.forEach(r => {
-                const linha = [
-                    `"${r.id}"`, `"${r.nome || ''}"`, `"${r.telefone || ''}"`,
-                    `"${r.servico || ''}"`, `"R$${r.preco || 0}"`, `"${r.data || ''}"`,
-                    `"${r.hora || ''}"`, `"${r.status || ''}"`
-                ];
-                csvContent += linha.join(",") + "\n";
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = `agendamentos.csv`;
-            link.click();
-            mostrarToast("Planilha gerada com sucesso!");
+            let csv = "\uFEFFID,Nome,Telefone,Serviço,Valor,Data,Hora,Status\n";
+            dadosDoBanco.forEach(r => csv += `"${r.id}","${r.nome||''}","${r.telefone||''}","${r.servico||''}","R$${r.preco||0}","${r.data||''}","${r.hora||''}","${r.status||''}"\n`);
+            const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download = `Agenda_${Date.now()}.csv`; a.click();
+            mostrarToast("Download iniciado!");
         }
 
+        // Máscara de Telefone BR
         document.getElementById('addFone').addEventListener('input', e => {
             let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
             e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
         });
 
-        function mostrarToast(mensagem, isError = false) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = mensagem;
-            toast.style.borderColor = isError ? '#ef4444' : 'var(--secondary)';
-            toast.querySelector('i').className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
-            toast.querySelector('i').style.color = isError ? '#ef4444' : 'var(--secondary)';
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        function mostrarToast(msg, erro = false) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            t.style.borderLeftColor = erro ? 'var(--danger)' : 'var(--secondary)';
+            t.querySelector('i').className = erro ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+            t.querySelector('i').style.color = erro ? 'var(--danger)' : 'var(--secondary)';
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3500);
         }
     </script>
 </body>
